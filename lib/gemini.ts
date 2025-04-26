@@ -167,6 +167,78 @@ const modelTranscribe = genAI.getGenerativeModel({
 		"You are an expert english teacher. Transcribe the audio to text.",
 });
 
+const modelStoryTellingSuggestion = genAI.getGenerativeModel({
+	model: "gemini-2.0-flash",
+	systemInstruction: [
+		"You are a professional English storytelling and speaking coach, specializing in IELTS-style image description and narrative tasks.",
+		"",
+		"Your task is to analyze the user's spoken or written storytelling based on their description of an image. Evaluate their use of English in terms of:",
+		"- Grammar (accuracy and range)",
+		"- Vocabulary (variety, precision, and appropriateness)",
+		"- Fluency (flow, rhythm, and naturalness)",
+		"- Coherence and cohesion (logical sequence and use of linking phrases)",
+		"- Storytelling quality (detail, creativity, emotional engagement)",
+		"",
+		"Use a score from 1 to 10, based on these criteria:",
+		"  1-2 (Very Poor): Very basic English; frequent grammatical errors; minimal or disjointed description; difficult to understand.",
+		"  3-4 (Poor): Limited vocabulary; frequent grammar mistakes; repetitive or incomplete ideas; low fluency.",
+		"  5-6 (Average): Understandable but simple language; occasional errors; lacks depth or smooth storytelling.",
+		"  7-8 (Good): Clear, mostly accurate grammar; varied vocabulary; coherent and logical story with some minor gaps.",
+		"  9-10 (Excellent): Fluent, natural, and richly detailed storytelling; precise grammar; excellent organization and engagement.",
+		"",
+		"For the output:",
+		"- Identify specific parts of the user's story that need improvement.",
+		"- Provide concise, constructive grammar or storytelling suggestions for each part.",
+		"- Offer corrected examples or phrasings if appropriate.",
+		"",
+		"Format your output as a JSON object with:",
+		"- 'overallSuggestion': A comprehensive and motivational summary highlighting overall strengths and areas for growth.",
+		"- 'score': The total performance score (1-10).",
+		"- 'suggestions': An array where each object includes the 'part' needing improvement and a 'suggestion' for how to improve it.",
+		"",
+		"Be constructive, supportive, and specific. Focus on helping the user speak English more fluently, vividly, and correctly.",
+		"",
+		"Output only the JSON following the provided schema, without any extra text.",
+	].join("\n"),
+	generationConfig: {
+		responseMimeType: "application/json",
+		responseSchema: StoryTellingSuggestionSchema,
+	},
+});
+
+async function modelStoryTelling(instruction: string) {
+	const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+	// Prepare the content parts
+	const contents = [{ text: instruction }];
+
+	try {
+		// Use the newer Gemini image generation model
+		const response = await ai.models.generateContent({
+			model: "gemini-2.0-flash-exp-image-generation",
+			contents: contents,
+			config: {
+				responseModalities: [Modality.TEXT, Modality.IMAGE],
+			},
+		});
+
+		// Extract the image data
+		if (response?.candidates?.[0]?.content?.parts) {
+			for (const part of response.candidates[0].content.parts) {
+				if (part.inlineData && part.inlineData.data) {
+					const imageData = part.inlineData.data;
+					return Buffer.from(imageData, "base64");
+				}
+			}
+		}
+
+		throw new Error("No image was generated in the response");
+	} catch (error) {
+		console.error("Error generating image with Gemini:", error);
+		throw new Error("Failed to generate image with Gemini");
+	}
+}
+
 const DebateThemeSchema = {
 	description: "Generate a random topic for a debate session",
 	type: SchemaType.ARRAY,
@@ -308,10 +380,10 @@ export {
 	modelConversation,
 	modelTranscribe,
 	modelDailyTalkSuggestion,
+	modelStoryTellingSuggestion,
+	modelStoryTelling,
 	modelDebateTheme,
 	modelDebateConversation,
 	modelDebateSuggestion,
 	modelDebateTranscribe
-	modelStoryTellingSuggestion,
-	modelStoryTelling,
 };

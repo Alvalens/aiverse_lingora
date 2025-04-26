@@ -266,11 +266,11 @@ model debateSession {
   userId      String
   theme       String
   description String    @db.Text
-  suggestions Json
+  suggestions String?   @db.Text
   duration    Int       @default(5)
   startedAt   DateTime  @default(now())
   endedAt     DateTime?
-  score       Int
+  score       Int?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

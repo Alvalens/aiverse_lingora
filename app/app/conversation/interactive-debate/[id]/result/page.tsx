@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -12,9 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 import toast from 'react-hot-toast';
 
-interface DailyTalkQuestion {
+interface DebateQuestion {
   id: string;
-  dailyTalkId: string;
+  debateId: string;
   question: string;
   answer: string;
   suggestion: string | null;
@@ -23,7 +23,7 @@ interface DailyTalkQuestion {
   updatedAt: string;
 }
 
-interface DailyTalkSession {
+interface DebateSession {
   id: string;
   userId: string;
   theme: string;
@@ -33,47 +33,47 @@ interface DailyTalkSession {
   endedAt: string | null;
   score: number | null;
   suggestions: any | null;
-  questions: DailyTalkQuestion[];
+  questions: DebateQuestion[];
   createdAt: string;
   updatedAt: string;
 }
 
-export default function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [loading, setLoading] = useState(true);
-  const [session, setSession] = useState<DailyTalkSession | null>(null);
+  const [session, setSession] = useState<DebateSession | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchDailyTalkHistory = async () => {
+    const fetchDebateHistory = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/conversations/daily-talk/${id}/history`);
+        const response = await fetch(`/api/conversations/interactive-debate/${id}/history`);
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch daily talk history');
+          throw new Error(errorData.error || 'Failed to fetch debate history');
         }
 
         const data = await response.json();
         setSession(data);
       } catch (err) {
-        console.error('Error fetching daily talk history:', err);
+        console.error('Error fetching debate history:', err);
         setError(err instanceof Error ? err.message : 'An unknown error occurred');
-        toast.error('Failed to load daily talk history');
+        toast.error('Failed to load  debate history');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDailyTalkHistory();
+    fetchDebateHistory();
   }, [id]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Loading daily talk history...</h2>
+          <h2 className="text-2xl font-bold mb-4">Loading debate history...</h2>
           <div className="animate-pulse h-2 bg-gray-300 rounded w-24 mx-auto"></div>
         </div>
       </div>
@@ -104,7 +104,7 @@ export default function Page({ params }: { params: { id: string } }) {
         <Card>
           <CardHeader>
             <CardTitle>No Data Found</CardTitle>
-            <CardDescription>Could not find daily talk session data.</CardDescription>
+            <CardDescription>Could not find debate session data.</CardDescription>
           </CardHeader>
           <CardFooter>
             <Button onClick={() => window.history.back()}>Go Back</Button>
@@ -123,7 +123,7 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Daily Talk Review</h1>
+        <h1 className="text-3xl font-bold mb-2">Debate Review</h1>
         <p className="text-gray-600 mb-4">
           Theme: <span className="font-medium">{session.theme}</span>
         </p>
@@ -227,7 +227,7 @@ export default function Page({ params }: { params: { id: string } }) {
         ) : (
           <Card>
             <CardContent className="p-6">
-              <p className="text-center text-gray-500">No conversation history found for this daily talk session.</p>
+              <p className="text-center text-gray-500">No conversation history found for this debate session.</p>
             </CardContent>
           </Card>
         )}
@@ -238,7 +238,7 @@ export default function Page({ params }: { params: { id: string } }) {
           Back
         </Button>
         <Button onClick={() => window.location.href = "/app/conversation"}>
-          New Daily Talk
+          New Interactive Debate
         </Button>
       </div>
     </div>

@@ -22,44 +22,45 @@ function generateSuggestions(
 		)
 		.join(", ");
 
-	return `You are a professional English fluency coach specializing in daily conversation practice.
-	Your task is to review each user response for grammar accuracy, fluency, naturalness, and relevance to the conversation theme.
+		return `You are a professional English debate coach specializing in structured debate practice.
+		Your task is to evaluate each user response as an argument, focusing on:
+		  - Logical coherence and structure
+		  - Persuasiveness and use of evidence
+		  - Rhetorical impact and language accuracy
 	
-	The conversation theme is: "${theme}"
-	Theme description: "${description}"
+Debate topic: "${theme}"
+Topic description: "${description}"
 	
-	Use a score from 1 to 10, where:
-		1-2 (Very Poor): Grammatically broken, unnatural phrasing, difficult to understand.
-		3-4 (Poor): Frequent grammar issues or awkwardness, understandable but unnatural.
-		5-6 (Average): Mostly understandable with minor grammar errors or stiff phrasing.
-		7-8 (Strong): Fluent and clear with small improvements possible for full naturalness.
-		9-10 (Excellent): Fully natural, grammatically correct, and engaging for daily conversation.
-	
+		Use a score from 1 to 10, where:
+		1-2 (Very Weak): Argument is unclear or unsupported, containing major logical flaws.
+		3-4 (Weak): Some structure present but evidence is poor or language errors hinder clarity.
+		5-6 (Average): Argument is understandable with minor logical lapses or phrasing issues.
+		7-8 (Strong): Well-structured, persuasive argument with relevant evidence and clear expression.
+		9-10 (Excellent): Exceptionally convincing, logically rigorous, and eloquently articulated.
+
 	To ensure an unbiased evaluation, follow these guidelines:
-		- Prioritize real conversational flow over textbook correctness.
-		- Focus on idiomatic phrasing, appropriate word choices, and logical responses.
-		- Reward confident, natural expressions even if very minor informalities exist.
-		- Penalize critical grammar mistakes, confusing wording, or awkward structures.
-		- Use the full 1-10 range based strictly on linguistic quality and naturalness.
+		- Prioritize sound reasoning and clear argumentative structure over verbosity.
+		- Focus on the relevance and strength of evidence supporting each claim.
+		- Reward concise, coherent, and well-supported arguments.
+		- Penalize logical fallacies, unsupported assertions, or digressions from the topic.
+		- Use the full 1–10 range based strictly on argumentative quality and language precision.
 	
-	For each answer in the history, output an object with:
-		• "suggestion": a concise, constructive improvement tip with an example correction if needed,
-		• "reason": why the change will improve fluency, clarity, or naturalness,
-		• "mark": the numeric score (1-10) based on the above criteria.
-	
-	In addition, provide an "overallSuggestion" that summarizes the user's conversational strengths, weaknesses, and provides strategic tips for improving everyday English fluency.
-	
-	Your response should be structured as:
-	{
-		"answers": [array of individual answer assessments - exactly ${
-			history.length
-		} objects],
-		"overallSuggestion": "comprehensive summary of conversation performance"
-	}
-	
-	Respond in "${formatLanguage(language)}".
-	
-	Conversation history: [${conversation}]`;
+For each exchange in the history, output an object with:
+  • "suggestion": a concise tip to strengthen the argument or improve language, with an example correction if applicable,
+  • "reason": why this change enhances clarity, logic, or persuasiveness,
+  • "mark": the numeric score (1–10) based on the above criteria.
+
+In addition, include an "overallSuggestion" that summarizes the debater’s strengths, weaknesses, and offers strategic tips for more effective debating.
+
+Your response should be structured as:
+{
+  "answers": [/* exactly ${history.length} objects */],
+  "overallSuggestion": "comprehensive summary of debate performance"
+}
+
+Respond in "${formatLanguage(language)}".
+
+Debate history: [${conversation}]`;
 }
 
 export async function POST(
@@ -67,9 +68,9 @@ export async function POST(
 	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const { id: debateId } = await params;
+		const { id } = await (params);
 
-		if (!debateId) {
+		if (!id) {
 			return NextResponse.json(
 				{ error: "Invalid request" },
 				{ status: 400 }
@@ -89,7 +90,7 @@ export async function POST(
 
 		const debateSession = await prisma.debateSession.findUnique({
 			where: {
-				id: debateId,
+				id: id,
 				userId: user_id,
 			},
 		});
@@ -198,7 +199,7 @@ export async function POST(
 		for (let i = 0; i < history.length; i++) {
 			await prisma.debateQuestion.create({
 				data: {
-					debateId: debateId,
+					debateId: id,
 					question: history[i].question,
 					answer: history[i].answer,
 					suggestion: suggestions[i].suggestion,
@@ -213,7 +214,7 @@ export async function POST(
 
 		// Update the session with overall score and suggestions
 		await prisma.debateSession.update({
-			where: { id: debateId },
+			where: { id: id },
 			data: {
 				score: Math.round(totalMark / history.length),
 				suggestions: overallSuggestion,
@@ -222,12 +223,12 @@ export async function POST(
 
 		return NextResponse.json({
 			success: true,
-			message: "Debate session saved successfully with suggestions",
+			message: "Debatesession saved successfully with suggestions",
 		});
 	} catch (error) {
 		console.error("Error in saving debate session:", error);
 		return NextResponse.json(
-			{ error: "Failed to save debate session" },
+			{ error: "Failed to save debatesession" },
 			{ status: 500 }
 		);
 	}

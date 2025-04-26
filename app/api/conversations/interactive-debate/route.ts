@@ -32,14 +32,14 @@ export async function POST(req: Request) {
 			where: { userId: session.user.id },
 		});
 
-		if (!tokenBalance || tokenBalance.token < Tokens.convDaily) {
+		if (!tokenBalance || tokenBalance.token < Tokens.convDebate) {
 			return NextResponse.json(
 				{ error: "Insufficient tokens" },
 				{ status: 403 }
 			);
 		}
 
-		// Create a new debate session
+		// Create a new daily talk session
 		const debateSession = await prisma.debateSession.create({
 			data: {
 				userId: session.user.id,
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 			where: { userId: session.user.id },
 			data: {
 				token: {
-					decrement: Tokens.convDaily,
+					decrement: Tokens.convDebate,
 				},
 			},
 		});

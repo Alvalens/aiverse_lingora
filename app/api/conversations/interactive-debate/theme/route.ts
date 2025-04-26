@@ -1,77 +1,64 @@
 import { NextResponse } from "next/server";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import { modelDebateTheme } from "@/lib/gemini";
 import { prisma } from "@/lib/prisma";
-import { Tokens } from "@/lib/constants";
 
-export async function POST(req: Request) {
-	try {
-		const session = await getServerSession(authOptions);
+const buildPrompt = () => {
+	return `You are an expert debate coach.  
+  Generate 5 thought-provoking debate themes. Each theme should be a concise phrase suitable for a two-person debate, and each must include a brief description outlining the core issue and potential arguments on both sides.  
+  Output as a JSON array in this format:  
+  [  
+	{ theme: 'theme1', description: 'description1' },  
+	...  
+  ]`;
+  };
+  
 
-		if (!session?.user?.id) {
-			return NextResponse.json(
-				{ error: "Unauthorized" },
-				{ status: 401 }
-			);
-		}
+export async function POST() {
+try {
+    const user_id = (await getServerSession(authOptions))?.user?.id;
+    if (!user_id) {
+        return NextResponse.json(
+            { error: "Unauthorized" },
+            { status: 401 }
+        );
+    }
 
-		// Parse request body
-		const body = await req.json();
-		const { theme, description } = body;
+    const user = await prisma.user.findUnique({
+        where: {
+            id: user_id as string,
+        },
+        include: {
+            tokens: true,
+        },
+    });
+    if (!user) {
+        return NextResponse.json(
+            { error: "User not found" },
+            { status: 404 }
+        );
+    }
 
-		// Validate input
-		if (!theme) {
-			return NextResponse.json(
-				{ error: "Theme is required" },
-				{ status: 400 }
-			);
-		}
+    const prompt = buildPrompt();
+    const result = await modelDebateTheme.generateContent(prompt);
+    const responseText = result.response.text();
+    const response = JSON.parse(responseText);
 
-		// Check user token balance
-		const tokenBalance = await prisma.tokenBalance.findUnique({
-			where: { userId: session.user.id },
-		});
-
-		if (!tokenBalance || tokenBalance.token < Tokens.convDebate) {
-			return NextResponse.json(
-				{ error: "Insufficient tokens" },
-				{ status: 403 }
-			);
-		}
-
-		// Create a new debate session
-		const debateSession = await prisma.debateSession.create({
-			data: {
-				userId: session.user.id,
-				theme,
-				description: description || "",
-			},
-		});
-
-		// Deduct tokens
-		await prisma.tokenBalance.update({
-			where: { userId: session.user.id },
-			data: {
-				token: {
-					decrement: Tokens.convDebate,
-				},
-			},
-		});
-
-		// Return the session ID
-		return NextResponse.json(
-			{
-				id: debateSession.id,
-				theme: debateSession.theme,
-				message: "Debate session created successfully",
-			},
-			{ status: 201 }
-		);
-	} catch (error) {
-		console.error("Error creating debate session:", error);
-		return NextResponse.json(
-			{ error: "Failed to create debate session" },
-			{ status: 500 }
-		);
-	}
+    // return to frontend
+    return NextResponse.json(
+        {
+            themes: response,
+        },
+        {
+            status: 200,
+        }
+    );
+} catch (error) {
+        console.error("Error in POST /api/conversations/interactive-debate/theme", error);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
 }
