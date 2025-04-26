@@ -85,7 +85,7 @@ export default function EmailVerificationStep({
       const limiterRes = await fetch("/api/auth/email-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: session?.user?.id, email }),
+        body: JSON.stringify({ userId: session?.user?.email, email }),
       })
       const limiterData = await limiterRes.json()
       if (!limiterRes.ok) {

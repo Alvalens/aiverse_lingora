@@ -1,6 +1,17 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
+import { DefaultSession } from "next-auth"
+
+// Extend the Session type to include emailVerified
+declare module "next-auth" {
+  interface Session {
+    user: {
+      emailVerified?: boolean
+      agreement?: boolean
+    } & DefaultSession["user"]
+  }
+}
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 
