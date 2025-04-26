@@ -73,7 +73,7 @@ const StoryTellingSuggestionSchema = {
 		},
 		score: {
 			type: SchemaType.NUMBER,
-			description: "score overall"
+			description: "score overall",
 		},
 		suggestions: {
 			type: SchemaType.ARRAY,
@@ -82,16 +82,108 @@ const StoryTellingSuggestionSchema = {
 				properties: {
 					part: {
 						type: SchemaType.STRING,
-						description: "part of the user answer that need correction"
+						description:
+							"part of the user answer that need correction",
 					},
 					suggestion: {
 						type: SchemaType.STRING,
-						description: "suggestion of the part based on the grammar etc"
-					}
-				}
-			}
-		}
-	}
+						description:
+							"suggestion of the part based on the grammar etc",
+					},
+				},
+			},
+		},
+	},
+} as Schema;
+
+const WritingAnalysisSchema = {
+	description:
+		"Essay analysis suggestion for improving English writing skills",
+	type: SchemaType.OBJECT,
+	properties: {
+		overallSuggestion: {
+			type: SchemaType.STRING,
+			description:
+				"Comprehensive analysis of the essay's strengths and weaknesses with constructive feedback",
+		},
+		score: {
+			type: SchemaType.NUMBER,
+			description: "Overall score (1-10) based on the essay quality",
+		},
+		structure: {
+			type: SchemaType.OBJECT,
+			properties: {
+				score: {
+					type: SchemaType.NUMBER,
+					description: "Score for essay structure (1-10)",
+				},
+				feedback: {
+					type: SchemaType.STRING,
+					description:
+						"Feedback on essay organization, coherence, and logical flow",
+				},
+			},
+		},
+		content: {
+			type: SchemaType.OBJECT,
+			properties: {
+				score: {
+					type: SchemaType.NUMBER,
+					description: "Score for essay content (1-10)",
+				},
+				feedback: {
+					type: SchemaType.STRING,
+					description:
+						"Feedback on argument quality, evidence usage, and idea development",
+				},
+			},
+		},
+		language: {
+			type: SchemaType.OBJECT,
+			properties: {
+				score: {
+					type: SchemaType.NUMBER,
+					description: "Score for language usage (1-10)",
+				},
+				feedback: {
+					type: SchemaType.STRING,
+					description:
+						"Feedback on grammar, vocabulary, and writing style",
+				},
+			},
+		},
+		suggestions: {
+			type: SchemaType.ARRAY,
+			items: {
+				type: SchemaType.OBJECT,
+				properties: {
+					part: {
+						type: SchemaType.STRING,
+						description:
+							"Excerpt from the essay that needs improvement",
+					},
+					suggestion: {
+						type: SchemaType.STRING,
+						description:
+							"Specific suggestion for improving the identified part",
+					},
+					category: {
+						type: SchemaType.STRING,
+						description:
+							"Category of the suggestion (grammar, vocabulary, structure, content, etc.)",
+					},
+				},
+			},
+		},
+	},
+	required: [
+		"overallSuggestion",
+		"score",
+		"structure",
+		"content",
+		"language",
+		"suggestions",
+	],
 } as Schema;
 
 const modelTheme = genAI.getGenerativeModel({
@@ -203,6 +295,52 @@ const modelStoryTellingSuggestion = genAI.getGenerativeModel({
 	generationConfig: {
 		responseMimeType: "application/json",
 		responseSchema: StoryTellingSuggestionSchema,
+	},
+});
+
+const modelWritingAnalysis = genAI.getGenerativeModel({
+	model: "gemini-1.5-pro",
+	systemInstruction: [
+		"You are a professional academic writing coach and English teacher specializing in essay analysis and improvement.",
+		"",
+		"Your task is to analyze the user's essay from a PDF document, focusing on:",
+		"",
+		"1. Structure and Organization:",
+		"- Evaluate the introduction, thesis statement, body paragraphs, and conclusion",
+		"- Assess paragraph organization, transitions, and logical flow",
+		"- Check for cohesion between ideas and sections",
+		"",
+		"2. Content and Arguments:",
+		"- Analyze the quality of arguments and reasoning",
+		"- Review the use of evidence, examples, and supporting details",
+		"- Assess critical thinking and depth of analysis",
+		"- Evaluate relevance of content to the topic/prompt",
+		"",
+		"3. Language and Style:",
+		"- Check for grammar, spelling, and punctuation errors",
+		"- Evaluate sentence structure and variety",
+		"- Assess vocabulary usage, formality, and tone",
+		"- Review clarity, conciseness, and precision of expression",
+		"",
+		"Use a scoring scale from 1 to 10 for each category and overall:",
+		"  1-2 (Very Poor): Fundamentally flawed; lacks basic organization; numerous serious errors; ideas unclear",
+		"  3-4 (Poor): Significant issues in structure, content, or language; limited development; many errors",
+		"  5-6 (Average): Basic competence; some organizational issues; adequate arguments; noticeable language errors",
+		"  7-8 (Good): Well-structured; solid arguments; minor language issues; room for refinement",
+		"  9-10 (Excellent): Sophisticated structure; compelling arguments; minimal errors; polished academic writing",
+		"",
+		"For the analysis output:",
+		"- Provide separate scores and detailed feedback for structure, content, and language",
+		"- Identify specific excerpts from the essay that need improvement",
+		"- Offer specific, actionable suggestions for each identified issue",
+		"- Categorize each suggestion (grammar, vocabulary, structure, argument, etc.)",
+		"- Include constructive, encouraging overall feedback that acknowledges strengths while guiding improvement",
+		"",
+		"Format your output as a JSON object following the provided schema, without any extra text.",
+	].join("\n"),
+	generationConfig: {
+		responseMimeType: "application/json",
+		responseSchema: WritingAnalysisSchema,
 	},
 });
 
@@ -386,4 +524,6 @@ export {
 	modelDebateConversation,
 	modelDebateSuggestion,
 	modelDebateTranscribe
+	modelWritingAnalysis,
+	WritingAnalysisSchema,
 };
