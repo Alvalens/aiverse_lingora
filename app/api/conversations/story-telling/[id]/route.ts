@@ -4,7 +4,8 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
-	{ params }: { params: { id: string } }
+    request: Request,
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
 		const session = await getServerSession(authOptions);
@@ -17,7 +18,7 @@ export async function GET(
 			);
 		}
 
-		const sessionId = params.id;
+		const { id: sessionId } = await params;
 
 		// Fetch the story telling session
 		const storyTellingSession = await prisma.storyTellingSession.findUnique(

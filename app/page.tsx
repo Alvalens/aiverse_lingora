@@ -2,9 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { ReactNode } from "react";
-import { useRouter } from "next/navigation";
 import Navbar from "./components/navbar";
 import AnimatedText from "./components/animated-text";
 import ExcellenceCard from "./components/excellence-card";
@@ -71,7 +69,6 @@ const AnimatedSection = ({
 };
 
 export default function Home() {
-  const router = useRouter();
   return (
     <div className="gradient-bg text-black min-h-screen relative bg-primary-z-40">
       {/* Gradient overlay that sits on top of everything including navbar */}

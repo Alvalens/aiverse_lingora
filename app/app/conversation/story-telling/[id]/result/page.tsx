@@ -28,7 +28,7 @@ export default function StoryTellingResultPage({ params }: { params: Promise<{ i
         }
 
         const data = await response.json();
-        setImagePath(data.imagePath || "");
+        setImagePath(data.image || "");
         setUserDescription(data.userAnswer || "");
         setSuggestions(data.suggestions || null);
       } catch (error) {

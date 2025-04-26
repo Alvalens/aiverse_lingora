@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
 	request: Request,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
 		const session = await getServerSession(authOptions);
@@ -18,9 +18,8 @@ export async function GET(
 			);
 		}
 
-		const sessionId = params.id;
+		const { id: sessionId } = await params;
 
-		// Fetch the story telling session
 		const storyTellingSession = await prisma.storyTellingSession.findUnique(
 			{
 				where: {
@@ -35,10 +34,11 @@ export async function GET(
 				{ error: "Session not found" },
 				{ status: 404 }
 			);
-		} // Return the image path and other relevant data
+		} 
+        
 		return NextResponse.json({
 			id: storyTellingSession.id,
-			imagePath: storyTellingSession.image,
+			image: storyTellingSession.image,
 			userAnswer: storyTellingSession.userAnswer,
 			suggestions: storyTellingSession.suggestions,
 			score: storyTellingSession.score,

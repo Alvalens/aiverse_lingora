@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -38,8 +38,8 @@ interface DailyTalkSession {
   updatedAt: string;
 }
 
-export default function Page({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<DailyTalkSession | null>(null);
   const [error, setError] = useState<string | null>(null);
