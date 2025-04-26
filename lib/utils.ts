@@ -24,6 +24,14 @@ export function isSessionEnded(startTime: Date, duration: number) {
   return Date.now() > end
 }
 
+/**
+ * Converts a time string to an ISO string with timezone adjustment.
+ * This function takes a time string, creates a Date object, and adjusts it
+ * to account for the local timezone offset before converting to ISO format.
+ * 
+ * @param time - The time string to be converted
+ * @returns The timezone-adjusted time as an ISO string
+ */
 export function translateTime(time: string) {
   const date = new Date(time)
   const offset = date.getTimezoneOffset()
@@ -31,6 +39,12 @@ export function translateTime(time: string) {
   return date.toISOString()
 }
 
+/**
+ * Formats a language code into its full language name.
+ * 
+ * @param language - The language code to format (e.g., "EN", "ID")
+ * @returns The full language name ("English" for "EN", "Indonesian" for "ID", defaults to "English")
+ */
 export function formatLanguage(language: string) {
   switch (language) {
     case "EN":
@@ -40,50 +54,4 @@ export function formatLanguage(language: string) {
     default:
       return "English"
   }
-}
-
-export async function validateUrl(urlString: string): Promise<boolean> {
-	try {
-		const url = new URL(urlString);
-		const protocolValid = ["http:", "https:"].includes(url.protocol);
-    
-		if (!protocolValid) {
-			throw new Error("Invalid URL protocol");
-		}
-
-    if (url.search) {
-      return true;
-    }
-
-		// Special handling for YouTube links
-		if (
-			url.hostname.includes("youtube.com") ||
-			url.hostname.includes("youtu.be")
-		) {
-			const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(
-				urlString
-			)}&format=json`;
-			const oembedResponse = await fetch(oembedUrl, { method: "GET" });
-			if (!oembedResponse.ok) {
-				console.error(
-					`YouTube video does not exist or is private: ${urlString}`
-				);
-				return false;
-			}
-			return true;
-		}
-
-		// For all other URLs, perform basic fetch check
-		const response = await fetch(urlString, { method: "GET" });
-		if (!response.ok) {
-			console.error(
-				`Non-YouTube URL fetch failed: ${response.status} ${urlString}`
-			);
-			return false;
-		}
-		return true;
-	} catch (err) {
-		console.error(`Error validating URL: ${urlString}`, err);
-		return false;
-	}
 }
