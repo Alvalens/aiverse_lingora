@@ -116,26 +116,26 @@ export default function Home() {
         >
           <motion.div variants={itemVariants}>
             <ExcellenceCard
-              image="landing-page/conversation.svg"
+              image="/landing-page/conversation.svg"
               title="Build Confidence Through Daily Talk to boost fluency and ease in speaking."
             />
           </motion.div>
           <motion.div variants={itemVariants}>
             <ExcellenceCard
-              image="landing-page/practice.svg"
+              image="/landing-page/practice.svg"
               title="Practice organizing ideas into clear, flowing narratives essential for longer discourse."
             />
           </motion.div>
           <motion.div variants={itemVariants}>
             <ExcellenceCard
-              image="landing-page/flame.svg"
+              image="/landing-page/flame.svg"
               title="Tackle complex topics with quick thinking and strong reasoning under high cognitive load."
             />
           </motion.div>
 
           <motion.div variants={itemVariants}>
             <ExcellenceCard
-              image="landing-page/circle.svg"
+              image="/landing-page/circle.svg"
               title="Grow Beyond the Test, focuses on real-world communicative skills for life and exams."
             />
           </motion.div>
