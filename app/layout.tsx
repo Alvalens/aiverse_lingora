@@ -26,65 +26,13 @@ const quickSand = Quicksand({
 
 export const metadata: Metadata = {
   title: {
-    default: "Lingora | English Practice Platform",
-    template: "%s | Intervyou",
-    absolute: "Lingora | English Practice Platform",
+    default: "Lingora | Platform Belajar Bahasa Inggris",
+    template: "%s | Lingora",
+    absolute: "Lingora",
   },
   applicationName: "Lingora",
   description:
-    "Platform pelatihan wawancara kerja dan optimasi CV. Dapatkan saran, evaluasi, dan pelatihan untuk mengembangkan karir.",
-  keywords: [
-    "wawancara kerja",
-    "analisis CV",
-    "pengembangan karir",
-    "resume",
-    "lowongan kerja",
-    "platform wawancara",
-    "latihan wawancara",
-    "AI interview",
-    "AI resume",
-    "AI career development",
-    "AI CV analysis",
-  ],
-  authors: [
-    {
-      name: "AI Verse",
-      url: "https://www.intervyou.me",
-    },
-  ],
-  openGraph: {
-    title: "Lingora | Platform Pelatihan Wawancara AI",
-    description:
-      "Platform inovatif untuk membantu profesional mempersiapkan wawancara kerja dan meningkatkan CV mereka.",
-    url: "https://www.intervyou.me",
-    siteName: "Lingora",
-    // images: [
-    //   {
-    //     url: ogImage.src,
-    //     width: 1200,
-    //     height: 630,
-    //     alt: "Intervyou",
-    //   },
-    // ],
-    locale: "id_ID",
-    type: "website",
-  },
-  // twitter: {
-  //   card: "summary_large_image",
-  //   site: "@situsanda",
-  //   creator: "@situsanda",
-  //   title: "Intervyou | Platform Wawancara & Analisis CV",
-  //   description:
-  //     "Platform inovatif yang membantu profesional mempersiapkan wawancara kerja dan meningkatkan CV mereka.",
-  //   images: ["https://www.intervyou.me/twitter-image.jpg"],
-  // },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  alternates: {
-    canonical: "https://www.intervyou.me",
-  },
+    "Lingora is a platform to learn English conversation with AI",
 };
 
 export default function RootLayout({
@@ -99,8 +47,7 @@ export default function RootLayout({
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
       ></Script>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${quickSand.variable}  antialiased bg-primary`}
-      >
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <main>
           <Toaster />
           <ReactQueryProvider>

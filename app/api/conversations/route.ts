@@ -1,0 +1,77 @@
+import { NextResponse } from "next/server";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { prisma } from "@/lib/prisma";
+import { Tokens } from "@/lib/constants";
+
+export async function POST(req: Request) {
+	try {
+		const session = await getServerSession(authOptions);
+
+		if (!session?.user?.id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
+		}
+
+		// Parse request body
+		const body = await req.json();
+		const { theme, description } = body;
+
+		// Validate input
+		if (!theme) {
+			return NextResponse.json(
+				{ error: "Theme is required" },
+				{ status: 400 }
+			);
+		}
+
+		// Check user token balance
+		const tokenBalance = await prisma.tokenBalance.findUnique({
+			where: { userId: session.user.id },
+		});
+
+		if (!tokenBalance || tokenBalance.token < Tokens.convDaily) {
+			return NextResponse.json(
+				{ error: "Insufficient tokens" },
+				{ status: 403 }
+			);
+		}
+
+		// Create a new daily talk session
+		const dailyTalkSession = await prisma.dailyTalkSession.create({
+			data: {
+				userId: session.user.id,
+				theme,
+				description: description || "",
+			},
+		});
+
+		// Deduct tokens
+		await prisma.tokenBalance.update({
+			where: { userId: session.user.id },
+			data: {
+				token: {
+					decrement: Tokens.convDaily,
+				},
+			},
+		});
+
+		// Return the session ID
+		return NextResponse.json(
+			{
+				id: dailyTalkSession.id,
+				theme: dailyTalkSession.theme,
+				message: "Daily talk session created successfully",
+			},
+			{ status: 201 }
+		);
+	} catch (error) {
+		console.error("Error creating daily talk session:", error);
+		return NextResponse.json(
+			{ error: "Failed to create daily talk session" },
+			{ status: 500 }
+		);
+	}
+}
