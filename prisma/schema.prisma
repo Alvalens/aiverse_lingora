@@ -251,12 +251,10 @@ model dailyTalkQuestion {
 model storyTellingSession {
   id          String   @id @default(cuid())
   userId      String
-  theme       String
-  description String   @db.Text
-  image       String?
+  image       String
   userAnswer  String?  @db.Text
-  suggestions Json
-  score       Int
+  suggestions Json?
+  score       Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -43,7 +43,6 @@ export default function RootLayout({
           <Toaster />
           <ReactQueryProvider>
             <NextAuthProvider>{children}</NextAuthProvider>
-            <NextAuthProvider>{children}</NextAuthProvider>
           </ReactQueryProvider>
         </main>
       </body>

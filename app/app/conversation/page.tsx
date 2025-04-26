@@ -16,8 +16,12 @@ export default function ConversationPage() {
     return <div className="flex justify-center items-center h-screen">Please login to continue</div>;
   }
 
-  const handleCreateConversation = () => {
+  const handleCreateDailyTalk = () => {
     router.push("/app/conversation/daily-talk");
+  };
+
+  const handleCreateStoryTelling = () => {
+    router.push("/app/conversation/story-telling");
   };
 
   return (
@@ -26,15 +30,31 @@ export default function ConversationPage() {
         <h1 className="text-2xl font-bold mb-6 text-center">Conversations</h1>
 
         <p className="mb-8 text-center">
-          Start a new conversation session to practice your English skills with AI.
+          Daily Talk with AI
         </p>
 
         <div className="flex justify-center">
           <Button
-            onClick={handleCreateConversation}
+            onClick={handleCreateDailyTalk}
             className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
           >
-            Create New Conversation
+            Create New
+          </Button>
+        </div>
+      </div>
+      <div className="w-full max-w-lg p-6 bg-[#052038] rounded-lg shadow-lg text-white mt-3">
+        <h1 className="text-2xl font-bold mb-6 text-center">Conversations</h1>
+
+        <p className="mb-8 text-center">
+          Story Telling 
+        </p>
+
+        <div className="flex justify-center">
+          <Button
+            onClick={handleCreateStoryTelling}
+            className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
+          >
+            Create New 
           </Button>
         </div>
       </div>

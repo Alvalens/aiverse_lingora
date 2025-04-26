@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI, Schema, SchemaType } from "@google/generative-ai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import * as fs from "node:fs";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -132,6 +133,39 @@ const modelTranscribe = genAI.getGenerativeModel({
 		"You are an expert english teacher. Transcribe the audio to text.",
 });
 
+async function modelStoryTelling(instruction: string) {
+	const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+
+	// Prepare the content parts
+	const contents = [{ text: instruction }];
+
+	try {
+		// Use the newer Gemini image generation model
+		const response = await ai.models.generateContent({
+			model: "gemini-2.0-flash-exp-image-generation",
+			contents: contents,
+			config: {
+				responseModalities: [Modality.TEXT, Modality.IMAGE],
+			},
+		});
+
+		// Extract the image data
+		if (response?.candidates?.[0]?.content?.parts) {
+			for (const part of response.candidates[0].content.parts) {
+				if (part.inlineData && part.inlineData.data) {
+					const imageData = part.inlineData.data;
+					return Buffer.from(imageData, "base64");
+				}
+			}
+		}
+
+		throw new Error("No image was generated in the response");
+	} catch (error) {
+		console.error("Error generating image with Gemini:", error);
+		throw new Error("Failed to generate image with Gemini");
+	}
+}
+
 export function fileToGenerativePart(path: string, mimeType: string) {
 	return {
 		inlineData: {
@@ -146,4 +180,5 @@ export {
 	modelConversation,
 	modelTranscribe,
 	modelDailyTalkSuggestion,
+	modelStoryTelling,
 };
