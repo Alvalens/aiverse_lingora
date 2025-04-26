@@ -1,7 +1,6 @@
 "use client"
 
-import { ChevronDown, LogOut, Settings, User } from "lucide-react"
-import Link from "next/link"
+import { ChevronDown, LogOut } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,18 +49,6 @@ export function UserProfile() {
           </div>
         </div>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/app/profile" className="flex items-center w-full">
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile Detail</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href="/app/setting" className="flex items-center w-full">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Setting</span>
-          </Link>
-        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => signOut()}
