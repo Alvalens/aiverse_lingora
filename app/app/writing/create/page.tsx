@@ -154,7 +154,7 @@ export default function CreateWritingPage() {
               <Button
                 onClick={handleUpload}
                 disabled={!file || isUploading || isAnalyzing}
-                className="w-full"
+                className="w-full text-black"
               >
                 {isUploading ? (
                   <>

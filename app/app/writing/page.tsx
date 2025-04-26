@@ -68,7 +68,7 @@ export default function WritingPage() {
             Upload essays and get detailed feedback to improve your writing skills
           </p>
         </div>
-        <Button onClick={handleCreateNew} className="flex items-center gap-2">
+        <Button onClick={handleCreateNew} className="text-black flex items-center gap-2">
           <PlusCircle className="h-4 w-4" />
           Analyze New Essay
         </Button>
@@ -88,7 +88,7 @@ export default function WritingPage() {
             <p className="text-sm text-gray-500 dark:text-gray-400 max-w-md mb-6">
               Upload your first essay to get detailed feedback and suggestions for improvement.
             </p>
-            <Button onClick={handleCreateNew} className="flex items-center gap-2">
+            <Button onClick={handleCreateNew} className="flex items-center gap-2 text-black">
               <PlusCircle className="h-4 w-4" />
               Analyze Essay
             </Button>
