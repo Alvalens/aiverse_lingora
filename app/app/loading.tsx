@@ -2,6 +2,10 @@
 
 import LoadingScreen from "@/components/loading-screen";
 
-export default function AppLoading() {
-  return <LoadingScreen />;
+export default function Loading() {
+  return (
+    <div className="loading-container">
+      <LoadingScreen />
+    </div>
+  );
 }

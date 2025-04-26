@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 
 const loadingTexts = [
   "Mengambil data...",
@@ -8,26 +7,20 @@ const loadingTexts = [
 ];
 
 export default function LoadingScreen() {
-  const [textIdx, setTextIdx] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTextIdx((idx) => (idx + 1) % loadingTexts.length);
-    }, 1200);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-300">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-black">
       <div className="text-center">
-        <div className="relative mx-auto mb-4">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-700"></div>
+        <div className="relative mx-auto mb-6">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-l-2 border-gray-400"></div>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-blue-700 font-bold text-xl">Lingora</span>
+                <span className="text-gray-300 font-light text-xl tracking-wider">
+                  L
+                </span>
           </div>
         </div>
-        <p className="mt-2 text-lg font-semibold text-blue-800 animate-pulse">
-          {loadingTexts[textIdx]}
+        <p className="mt-3 text-sm font-light text-gray-400 tracking-wide opacity-80">
+          {loadingTexts[Math.floor(Math.random() * loadingTexts.length)]}
         </p>
       </div>
     </div>
