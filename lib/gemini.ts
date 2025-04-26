@@ -523,7 +523,7 @@ export {
 	modelDebateTheme,
 	modelDebateConversation,
 	modelDebateSuggestion,
-	modelDebateTranscribe
+	modelDebateTranscribe,
 	modelWritingAnalysis,
 	WritingAnalysisSchema,
 };
