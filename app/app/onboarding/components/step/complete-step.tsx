@@ -6,7 +6,7 @@ interface CompleteStepProps {
 
 export default function CompleteStep({ onComplete }: CompleteStepProps) {
   return (
-    <div className="max-w-xl mx-auto text-center text-white">
+    <div className="max-w-xl mx-auto text-center text-color-text">
       <div className="mb-6">
         <svg className="mx-auto h-16 w-16 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -24,7 +24,7 @@ export default function CompleteStep({ onComplete }: CompleteStepProps) {
       </p>
       <button
         onClick={onComplete}
-        className="bg-primary border-2 border-secondary text-white py-3 px-8 rounded-lg text-lg font-medium hover:bg-secondary hover:text-black transition-colors"
+        className="bg-primary border-2 border-tertiary text-color-text py-3 px-8 rounded-lg text-lg font-medium hover:bg-tertiary hover:text-white transition-colors"
       >
         Go to Dashboard
       </button>

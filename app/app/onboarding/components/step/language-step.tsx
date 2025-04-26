@@ -47,7 +47,7 @@ export default function LanguageStep({
   }
 
   return (
-    <div className="max-w-xl mx-auto text-white">
+    <div className="max-w-xl mx-auto text-color-text">
       <h2 className="text-2xl font-bold mb-6 text-center">Choose Your Language</h2>
       <p className="mb-6 text-center">Select your preferred language for the platform interface.</p>
 
@@ -59,7 +59,7 @@ export default function LanguageStep({
             type="button"
             onClick={() => setLanguage("EN")}
             className={`px-6 py-4 border-2 rounded-lg flex-1 ${
-              language === "EN" ? "bg-[#0E63A9] border-[#0E63A9] text-white" : "bg-primary border-primary text-white"
+              language === "EN" ? "bg-tertiary border-tertiary text-white" : "bg-primary border-tertiary text-color-text"
             }`}
           >
             <div className="text-center">
@@ -71,7 +71,7 @@ export default function LanguageStep({
             type="button"
             onClick={() => setLanguage("ID")}
             className={`px-6 py-4 border-2 rounded-lg flex-1 ${
-              language === "ID" ? "bg-[#0E63A9] border-[#0E63A9] text-white" : "bg-primary border-primary text-white"
+              language === "ID" ? "bg-tertiary border-tertiary text-white" : "bg-primary border-tertiary text-color-text"
             }`}
           >
             <div className="text-center">

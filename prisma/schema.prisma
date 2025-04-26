@@ -59,6 +59,7 @@ model User {
   dailyTalkSession       dailyTalkSession[]
   storytellingSession    storyTellingSession[]
   debateSession          debateSession[]
+  essayAnalysis         essayAnalysis[]
   referralUsagesReceived ReferralUser[]        @relation("ReferredUser")
   referralCode           ReferralCode?
 
@@ -223,11 +224,11 @@ model dailyTalkSession {
   userId      String
   theme       String
   description String    @db.Text
-  suggestions Json
+  suggestions String?   @db.Text
   duration    Int       @default(5)
   startedAt   DateTime  @default(now())
   endedAt     DateTime?
-  score       Int
+  score       Int?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -251,12 +252,10 @@ model dailyTalkQuestion {
 model storyTellingSession {
   id          String   @id @default(cuid())
   userId      String
-  theme       String
-  description String   @db.Text
-  image       String?
+  image       String
   userAnswer  String?  @db.Text
-  suggestions Json
-  score       Int
+  suggestions Json?
+  score       Int?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -268,11 +267,11 @@ model debateSession {
   userId      String
   theme       String
   description String    @db.Text
-  suggestions Json
+  suggestions String?   @db.Text
   duration    Int       @default(5)
   startedAt   DateTime  @default(now())
   endedAt     DateTime?
-  score       Int
+  score       Int?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -291,4 +290,23 @@ model debateQuestion {
   updatedAt  DateTime @updatedAt
 
   debate debateSession @relation(fields: [debateId], references: [id], onDelete: Cascade)
+}
+
+model essayAnalysis {
+  id                String   @id @default(cuid())
+  userId            String
+  originalFilename  String?
+  overallSuggestion String   @db.Text
+  score             Int
+  structureScore    Int
+  structureFeedback String   @db.Text
+  contentScore      Int
+  contentFeedback   String   @db.Text
+  languageScore     Int
+  languageFeedback  String   @db.Text
+  suggestions       Json
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

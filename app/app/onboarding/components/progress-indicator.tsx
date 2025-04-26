@@ -12,7 +12,7 @@ interface ProgressIndicatorProps {
         <div className="relative py-6">
           <div className="absolute top-12 left-6 right-6 h-1 bg-gray-500 rounded-full transform -translate-y-1/2 z-0">
             <div
-              className="absolute h-1 bg-secondary rounded-full transition-all duration-300"
+              className="absolute h-1 bg-tertiary rounded-full transition-all duration-300"
               style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
             ></div>
           </div>
@@ -22,10 +22,10 @@ interface ProgressIndicatorProps {
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
                     index < currentStep
-                      ? "bg-secondary text-black"
+                      ? "bg-tertiary text-white"
                       : index === currentStep
-                      ? "bg-primary text-white border-2 border-secondary"
-                      : "bg-primary text-white border-2 border-gray-500"
+                      ? "bg-primary text-color-text border-2 border-tertiary"
+                      : "bg-primary text-color-text border-2 border-gray-500"
                   }`}
                 >
                   {index < currentStep ? (
@@ -50,9 +50,9 @@ interface ProgressIndicatorProps {
                 <span
                   className={`text-base hidden sm:block ${
                     index < currentStep
-                      ? "text-secondary" 
+                      ? "text-tertiary" 
                       : index === currentStep
-                      ? "text-white"
+                      ? "text-color-text"
                       : "text-gray-300"
                   }`}
                 >
