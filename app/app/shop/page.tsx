@@ -2,14 +2,16 @@
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
-import { Check, ChevronDown, ChevronUp } from 'lucide-react'
-import toast from "react-hot-toast"
+import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import { Toaster, toast } from "react-hot-toast"
 import { useState } from "react"
 import type { TokenPack } from "@prisma/client"
 
 declare global {
   interface Window {
-    snap: MidtransSnap
+    snap: {
+      pay: (token: string, callbacks: any) => void
+    }
   }
 }
 
@@ -24,33 +26,48 @@ const fetchTokenPacks = async () => {
 // SVG components
 const YellowCrown = () => (
   <svg width="54" height="52" viewBox="0 0 54 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M27 48L4.4603 22.6428C3.26164 21.2943 2.66231 20.6201 2.50428 19.7801C2.34624 18.9401 2.65956 18.0942 3.28619 16.4023L5.2677 11.0522C6.70992 7.15822 7.43103 5.21122 9.01952 4.10561C10.608 3 12.6843 3 16.8368 3H37.1632C41.3157 3 43.392 3 44.9805 4.10561C46.569 5.21122 47.2901 7.15822 48.7323 11.0522L50.7138 16.4023C51.3404 18.0942 51.6538 18.9401 51.4957 19.7801C51.3377 20.6201 50.7384 21.2943 49.5397 22.6428L27 48ZM27 48L37.9375 17.0625M27 48L16.0625 17.0625M50.4375 19.875L37.9375 17.0625M37.9375 17.0625L33.25 5.8125M37.9375 17.0625H16.0625M20.75 5.8125L16.0625 17.0625M16.0625 17.0625L3.5625 19.875" stroke="url(#paint0_linear_1021_1428)" strokeWidth="4.31797" strokeLinecap="round"/>
+    <path
+      d="M27 48L4.4603 22.6428C3.26164 21.2943 2.66231 20.6201 2.50428 19.7801C2.34624 18.9401 2.65956 18.0942 3.28619 16.4023L5.2677 11.0522C6.70992 7.15822 7.43103 5.21122 9.01952 4.10561C10.608 3 12.6843 3 16.8368 3H37.1632C41.3157 3 43.392 3 44.9805 4.10561C46.569 5.21122 47.2901 7.15822 48.7323 11.0522L50.7138 16.4023C51.3404 18.0942 51.6538 18.9401 51.4957 19.7801C51.3377 20.6201 50.7384 21.2943 49.5397 22.6428L27 48ZM27 48L37.9375 17.0625M27 48L16.0625 17.0625M50.4375 19.875L37.9375 17.0625M37.9375 17.0625L33.25 5.8125M37.9375 17.0625H16.0625M20.75 5.8125L16.0625 17.0625M16.0625 17.0625L3.5625 19.875"
+      stroke="url(#paint0_linear_1021_1428)"
+      strokeWidth="4.31797"
+      strokeLinecap="round"
+    />
     <defs>
       <linearGradient id="paint0_linear_1021_1428" x1="27" y1="3" x2="27" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#FDCB1A"/>
-        <stop offset="1" stopColor="#E08200"/>
+        <stop stopColor="#FDCB1A" />
+        <stop offset="1" stopColor="#E08200" />
       </linearGradient>
     </defs>
   </svg>
 )
 const GreenCrown = () => (
   <svg width="54" height="52" viewBox="0 0 54 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M27 48L4.4603 22.6428C3.26164 21.2943 2.66231 20.6201 2.50428 19.7801C2.34624 18.9401 2.65956 18.0942 3.28619 16.4023L5.2677 11.0522C6.70992 7.15822 7.43103 5.21122 9.01952 4.10561C10.608 3 12.6843 3 16.8368 3H37.1632C41.3157 3 43.392 3 44.9805 4.10561C46.569 5.21122 47.2901 7.15822 48.7323 11.0522L50.7138 16.4023C51.3404 18.0942 51.6538 18.9401 51.4957 19.7801C51.3377 20.6201 50.7384 21.2943 49.5397 22.6428L27 48ZM27 48L37.9375 17.0625M27 48L16.0625 17.0625M50.4375 19.875L37.9375 17.0625M37.9375 17.0625L33.25 5.8125M37.9375 17.0625H16.0625M20.75 5.8125L16.0625 17.0625M16.0625 17.0625L3.5625 19.875" stroke="url(#paint0_linear_1021_1438)" strokeWidth="4.31797" strokeLinecap="round"/>
+    <path
+      d="M27 48L4.4603 22.6428C3.26164 21.2943 2.66231 20.6201 2.50428 19.7801C2.34624 18.9401 2.65956 18.0942 3.28619 16.4023L5.2677 11.0522C6.70992 7.15822 7.43103 5.21122 9.01952 4.10561C10.608 3 12.6843 3 16.8368 3H37.1632C41.3157 3 43.392 3 44.9805 4.10561C46.569 5.21122 47.2901 7.15822 48.7323 11.0522L50.7138 16.4023C51.3404 18.0942 51.6538 18.9401 51.4957 19.7801C51.3377 20.6201 50.7384 21.2943 49.5397 22.6428L27 48ZM27 48L37.9375 17.0625M27 48L16.0625 17.0625M50.4375 19.875L37.9375 17.0625M37.9375 17.0625L33.25 5.8125M37.9375 17.0625H16.0625M20.75 5.8125L16.0625 17.0625M16.0625 17.0625L3.5625 19.875"
+      stroke="url(#paint0_linear_1021_1438)"
+      strokeWidth="4.31797"
+      strokeLinecap="round"
+    />
     <defs>
       <linearGradient id="paint0_linear_1021_1438" x1="27" y1="3" x2="27" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#48E07B"/>
-        <stop offset="1" stopColor="#007928"/>
+        <stop stopColor="#48E07B" />
+        <stop offset="1" stopColor="#007928" />
       </linearGradient>
     </defs>
   </svg>
 )
 const RedCrown = () => (
   <svg width="54" height="52" viewBox="0 0 54 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M27 48L4.4603 22.6428C3.26164 21.2943 2.66231 20.6201 2.50428 19.7801C2.34624 18.9401 2.65956 18.0942 3.28619 16.4023L5.2677 11.0522C6.70992 7.15822 7.43103 5.21122 9.01952 4.10561C10.608 3 12.6843 3 16.8368 3H37.1632C41.3157 3 43.392 3 44.9805 4.10561C46.569 5.21122 47.2901 7.15822 48.7323 11.0522L50.7138 16.4023C51.3404 18.0942 51.6538 18.9401 51.4957 19.7801C51.3377 20.6201 50.7384 21.2943 49.5397 22.6428L27 48ZM27 48L37.9375 17.0625M27 48L16.0625 17.0625M50.4375 19.875L37.9375 17.0625M37.9375 17.0625L33.25 5.8125M37.9375 17.0625H16.0625M20.75 5.8125L16.0625 17.0625M16.0625 17.0625L3.5625 19.875" stroke="url(#paint0_linear_1021_1439)" strokeWidth="4.31797" strokeLinecap="round"/>
+    <path
+      d="M27 48L4.4603 22.6428C3.26164 21.2943 2.66231 20.6201 2.50428 19.7801C2.34624 18.9401 2.65956 18.0942 3.28619 16.4023L5.2677 11.0522C6.70992 7.15822 7.43103 5.21122 9.01952 4.10561C10.608 3 12.6843 3 16.8368 3H37.1632C41.3157 3 43.392 3 44.9805 4.10561C46.569 5.21122 47.2901 7.15822 48.7323 11.0522L50.7138 16.4023C51.3404 18.0942 51.6538 18.9401 51.4957 19.7801C51.3377 20.6201 50.7384 21.2943 49.5397 22.6428L27 48ZM27 48L37.9375 17.0625M27 48L16.0625 17.0625M50.4375 19.875L37.9375 17.0625M37.9375 17.0625L33.25 5.8125M37.9375 17.0625H16.0625M20.75 5.8125L16.0625 17.0625M16.0625 17.0625L3.5625 19.875"
+      stroke="url(#paint0_linear_1021_1439)"
+      strokeWidth="4.31797"
+      strokeLinecap="round"
+    />
     <defs>
       <linearGradient id="paint0_linear_1021_1439" x1="27" y1="3" x2="27" y2="48" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#F77170"/>
-        <stop offset="1" stopColor="#E42F2D"/>
+        <stop stopColor="#F77170" />
+        <stop offset="1" stopColor="#E42F2D" />
       </linearGradient>
     </defs>
   </svg>
@@ -82,7 +99,7 @@ const getTitleColor = (packId: number) => {
   }
 }
 
-export default function Page() {
+export default function ShopPage() {
   const { data, error, isLoading } = useQuery({
     queryKey: ["tokenPacks"],
     queryFn: fetchTokenPacks,
@@ -203,6 +220,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-[#001427] text-white py-8 px-2">
+      <Toaster position="top-center" />
       <div className="max-w-7xl mx-auto w-full">
         {/* Header Section */}
         <div className="mb-12">
@@ -225,19 +243,25 @@ export default function Page() {
               {/* Best Offer Badge */}
               {pack.popular && (
                 <div className="absolute -top-5 left-0 right-0 z-20 flex justify-center">
-                  <div className="bg-yellow-500 text-black px-5 py-1.5 text-base font-bold rounded-md shadow-lg">Best Offer</div>
+                  <div className="bg-yellow-500 text-black px-5 py-1.5 text-base font-bold rounded-md shadow-lg">
+                    Best Offer
+                  </div>
                 </div>
               )}
 
               {/* Card utama */}
-              <div className="relative w-full min-h-[520px] md:min-h-[560px] lg:min-h-[600px] h-full rounded-2xl overflow-visible flex flex-col justify-between shadow-xl p-6">
+              <div
+                className={`relative w-full transition-all duration-300 ease-in-out ${
+                  expandedFeatures[pack.id] ? "min-h-[620px]" : "min-h-[520px]"
+                } md:min-h-[560px] lg:min-h-[600px] h-full rounded-2xl overflow-visible flex flex-col justify-between shadow-xl p-6`}
+              >
                 {/* SVG Background */}
                 <div className="absolute inset-0 w-full h-full">
                   <img
                     src={
                       hoveredCard === pack.id || pack.popular
-                        ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/shop-hover-fix-ZTTjF9NVKvlfY6xUOsOB3YUtRqnGmK.svg"
-                        : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/shop-transparant-fix-79fcbmny0wwfHVR8TRkgq9onrAhTot.svg"
+                        ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/shop-hover-e01klToHDU5ALy459iLqYlc5qdvKr1.svg" // shop-hover.svg
+                        : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/shop-transparant-A2yHVpZiARPSeZO6ZqwedbfZYfgOLs.svg" // shop-transparant.svg
                     }
                     alt=""
                     className="w-full h-full object-cover"
@@ -250,12 +274,12 @@ export default function Page() {
                   {/* Icon, Title, Desc, Price */}
                   <div className="flex flex-col items-start text-start min-h-[160px] md:min-h-[180px] lg:min-h-[200px]">
                     <div className="mb-4">
-                      <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16">
-                        {getCrownIcon(pack.id)}
-                      </div>
+                      <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16">{getCrownIcon(pack.id)}</div>
                     </div>
                     <h3 className={`text-xl md:text-2xl font-bold mb-2 ${getTitleColor(pack.id)}`}>{pack.name}</h3>
-                    <p className="text-gray-300 mb-2 text-base md:text-lg">{pack.description || "For large teams & corporations"}</p>
+                    <p className="text-gray-300 mb-2 text-base md:text-lg">
+                      {pack.description || "For large teams & corporations"}
+                    </p>
                     <div className="mb-2">
                       <span className="text-2xl md:text-3xl font-bold">
                         {pack.price === 0 ? "Free" : `IDR ${pack.price.toLocaleString()}`}
@@ -275,7 +299,7 @@ export default function Page() {
                     <ul className="space-y-2 relative">
                       {pack.features?.slice(0, expandedFeatures[pack.id] ? undefined : 4).map((feature, index) => (
                         <li key={index} className="flex items-start">
-                          <Check className="h-5 w-5 text-secondary mr-2 flex-shrink-0 mt-1" />
+                          <Check className="h-5 w-5 text-teal-400 mr-2 flex-shrink-0 mt-1" />
                           <span className="text-base md:text-lg text-gray-200">{feature}</span>
                         </li>
                       ))}
@@ -306,18 +330,19 @@ export default function Page() {
                   <div className="mt-auto pt-6 flex justify-center">
                     <button
                       onClick={() => handleBuy(pack.id)}
-                      className={`w-full py-3 rounded-xl font-bold text-lg transition-colors duration-300 border-2 border-secondary
-                        ${pack.popular
-                          ? "bg-secondary text-black"
-                          : "bg-primary text-white hover:bg-secondary hover:text-black"
+                      className={`w-full py-3 rounded-xl font-bold text-lg transition-colors duration-300 border-2 border-teal-500
+                        ${
+                          pack.popular
+                            ? "bg-teal-500 text-black"
+                            : "bg-transparent text-white hover:bg-teal-500 hover:text-black"
                         }
-                        hover:border-secondary
+                        hover:border-teal-500
                       `}
                     >
                       {pack.price === 0 ? "Get Started" : "Buy Now"}
                     </button>
                   </div>
-                  <p className="text-center text-secondary mt-3 font-medium text-sm md:text-base">Limited Offer</p>
+                  <p className="text-center text-teal-400 mt-3 font-medium text-sm md:text-base">Limited Offer</p>
                 </div>
               </div>
             </div>
@@ -327,6 +352,3 @@ export default function Page() {
     </div>
   )
 }
-// Komentar perubahan:
-// - Bagian atas card (icon, title, desc, price, tokens) diberi min-h agar tidak berubah saat show more/less.
-// - Icon crown di kiri atas diganti SVG sesuai warna pack.

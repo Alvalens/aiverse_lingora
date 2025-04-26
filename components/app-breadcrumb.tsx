@@ -33,7 +33,7 @@ export function AppBreadcrumb() {
                 <React.Fragment key={href}>
                   <BreadcrumbItem>
                     {isLast ? (
-                      <BreadcrumbPage className="text-secondary font-medium">{displayName}</BreadcrumbPage>
+                      <BreadcrumbPage className="text-[#757575] font-medium">{displayName}</BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink asChild>
                         <Link href={href} className="text-secondary/70">
