@@ -5,17 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const progressItems = [
   {
-    label: "Overall Interview",
+    label: "Conversation",
     value: 75,
     level: "High" as const,
   },
   {
-    label: "CV Optimizations",
+    label: "Writing",
     value: 45,
     level: "Low" as const,
   },
   {
-    label: "CV Analysis",
+    label: "Vocabulary",
     value: 15,
     level: "Very Low" as const,
   },
@@ -23,9 +23,9 @@ const progressItems = [
 
 const getSolidColorClass = (value: number) => {
   if (value >= 66) {
-    return "bg-lime-400"; 
+    return "bg-lime-400";
   } else if (value >= 33) {
-    return "bg-orange-400"; 
+    return "bg-orange-400";
   } else {
     return "bg-red-500";
   }
@@ -33,7 +33,7 @@ const getSolidColorClass = (value: number) => {
 
 export function ProgressSection() {
   return (
-    <Card className="border-[hsl(var(--border))] bg-[hsl(var(--tertiary))] rounded-lg shadow-md h-[320px]">
+    <Card className="border-[hsl(var(--border))] bg-[hsl(var(--tertiary))] rounded-lg shadow-md h-[400px]">
       <CardHeader className="pb-1 pt-3 border-b border-[hsl(var(--border))]">
         <CardTitle className="text-base font-bold text-[hsl(var(--tertiary-foreground))]">
           Statistic
@@ -62,7 +62,7 @@ export function ProgressSection() {
               </div>
 
               <div className="flex items-center">
-                <div className="w-full h-3 bg-white rounded-full overflow-hidden mr-20">
+                <div className="w-full h-3 bg-[#E2E8F0] rounded-full overflow-hidden mr-20">
                   <div
                     className={`h-full ${getSolidColorClass(item.value)} rounded-full`}
                     style={{ width: `${item.value}%` }}
@@ -71,7 +71,14 @@ export function ProgressSection() {
 
                 <Button
                   size="sm"
-                  className="absolute right-0 bg-[hsl(var(--secondary))] text-black hover:bg-[hsl(var(--secondary))]/90 px-2 py-0 h-6 text-base rounded-md"
+                  className="absolute right-0 bg-[hsl(var(--secondary))] text-black hover:bg-[hsl(var(--secondary))]/90 px-2 py-0 h-6 text-base rounded-md border-2"
+                  style={{
+                    background: "var(--color-secondary)",
+                    border: "2px solid transparent",
+                    backgroundClip: "padding-box, border-box",
+                    backgroundImage:
+                      "linear-gradient(var(--color-secondary), var(--color-secondary)), linear-gradient(135deg, var(--color-quaternary), var(--color-tertiary))",
+                  }}
                 >
                   Start
                 </Button>

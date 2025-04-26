@@ -126,4 +126,11 @@
   --color-secondary: #F8FAFC;
   --color-tertiary: #00D4DA;
   --color-quaternary: #0A3558;
+  --color-color-border-secondary: #E2E8F0;
+  --color-color-text: #303030;
+}
+
+.sidebar-menu-button:hover {
+  background-color: #E7EBEE !important;
+  color: var(--color-text) !important;
 }

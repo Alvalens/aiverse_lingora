@@ -1,241 +1,240 @@
 "use client"
 
-import type React from "react"
-
-import { FileText, HelpCircle, Home, ShoppingCart } from "lucide-react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+import { Menu } from "lucide-react"
 
 interface AppSidebarProps {
-  className?: string
-  isCollapsed?: boolean
-  style?: React.CSSProperties
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function AppSidebar({ className, isCollapsed, style }: AppSidebarProps) {
+export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
   const pathname = usePathname()
 
+  // Helper to check active state
+  const isActive = (href: string) => {
+    if (href === "/app/dashboard" && (pathname === "/app/dashboard" || pathname === "/app" || pathname === "/")) {
+      return true
+    }
+    return pathname === href
+  }
+
+  useEffect(() => {
+    // Load sidebar state from localStorage on mount
+    const savedState = localStorage.getItem("sidebar-state")
+    if (savedState) {
+      const parsedState = savedState === "true"
+      setIsOpen(parsedState)
+      if (onOpenChange) onOpenChange(parsedState)
+    }
+
+    // Update CSS variable for content margin
+    document.documentElement.style.setProperty("--sidebar-width", isOpen ? "20rem" : "4rem")
+  }, [isOpen, onOpenChange])
+
+  const toggleSidebar = () => {
+    const newState = !isOpen
+    setIsOpen(newState)
+    localStorage.setItem("sidebar-state", String(newState))
+    if (onOpenChange) onOpenChange(newState)
+
+    // Update CSS variable for content margin
+    document.documentElement.style.setProperty("--sidebar-width", newState ? "20rem" : "4rem")
+  }
+
   return (
-    <Sidebar
-      style={{ backgroundColor: "#021A30", ...style }}
-      className={`border-r-0 border-transparent text-sidebar-foreground sidebar-transition ${className} bg-sidebarCustom`}
-      collapsible="icon"
-      side="left"
-      data-state={isCollapsed ? "collapsed" : "expanded"}
-    >
-      <SidebarHeader className="mt-0 pt-0" style={{ backgroundColor: "#021A30" }}>
-        <div className={`flex h-16 items-center px-4 ${isCollapsed ? "justify-center" : ""}`}>
-          <Link href="/" className={`flex items-center gap-3 ${isCollapsed ? "justify-center" : ""}`}>
-            {!isCollapsed && (
-              <div className="flex h-8 w-8 items-center justify-center">
+    <>
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 left-0 h-screen bg-primary z-30 flex flex-col transform transition-all duration-300 ease-in-out ${
+          isOpen ? "w-80 translate-x-0" : "w-16 translate-x-0"
+        }`}
+        style={{ backgroundColor: "primary" }}
+      >
+        {/* Logo and Header - Hidden when collapsed */}
+        {isOpen && (
+          <div className="mt-4 pt-4 flex justify-center items-center px-4 animate-fadeIn">
+            <Link href="/" className="flex items-center gap-3 justify-center w-full">
+              <div className="flex h-10 w-10 items-center justify-center">
                 <Image
-                  src="/images/loginregister/Logo-Intervyou.png"
-                  alt="Intervyou Logo"
-                  width={24}
-                  height={24}
+                  src="/images/dashboard/logo-lingora.svg"
+                  alt="Lingora Logo"
+                  width={32}
+                  height={32}
                   priority
-                  className="h-8 w-8"
+                  className="h-10 w-10"
                 />
               </div>
-            )}
-            <span
-              className={`text-xl font-bold text-sidebar-foreground sidebar-transition ${
-                isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"
+              <span className="text-xl font-bold text-color-text">Lingora</span>
+            </Link>
+          </div>
+        )}
+
+        {/* Menu Content */}
+        <div className={`${isOpen ? "mt-8" : "mt-16"} flex-1 overflow-y-auto`}>
+          {/* Dashboard */}
+          <div className="px-2 mb-4">
+            <Link
+              href="/app/dashboard"
+              className={`flex items-center rounded-xl p-3 transition-all duration-200 ${
+                isActive("/app/dashboard")
+                  ? "bg-[#E7EBEE] text-color-text"
+                  : "bg-primary text-color-text hover:bg-[#E7EBEE]"
               }`}
             >
-              Intervyou.ai
-            </span>
-          </Link>
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent className="mt-0 pt-0" style={{ backgroundColor: "#021A30" }}>
-        {/* Dashboard */}
-        <div className="px-2 pt-0 mt-0">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip="Dashboard"
-                isActive={pathname === "/app/dashboard" || pathname === "/"}
-                className={`${isCollapsed ? "!p-0" : ""} ${
-                  pathname === "/app/dashboard" || pathname === "/"
-                    ? "bg-[#18354E] hover:bg-[#18354E] text-white"
-                    : "hover:bg-[#18354E] hover:text-white"
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/dashboard.svg" alt="Dashboard" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                <Link href="/app/dashboard" className="flex items-center w-full sidebar-transition">
-                  <div className="flex items-center justify-center w-10 h-10">
-                    <Home className={`h-5 w-5 ${pathname === "/app/dashboard" || pathname === "/" ? "text-white" : "hover:text-white"}`} />
-                  </div>
-                  <span
-                    className={`sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto ml-3"
-                    } ${pathname === "/app/dashboard" || pathname === "/" ? "text-white" : ""}`}
-                  >
-                    Dashboard
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </div>
+                Dashboard
+              </span>
+            </Link>
+          </div>
 
-        {/* MENU Section */}
-        <div className="px-2 py-2 mt-4">
-          <p
-            className={`mb-2 px-2 text-xs font-semibold uppercase text-sidebar-foreground/50 transition-opacity sidebar-transition ${
-              isCollapsed ? "opacity-0 h-0 overflow-hidden" : "opacity-100 h-auto"
-            }`}
-          >
-            MENU
-          </p>
-          <SidebarMenu>
-            {/* My CV */}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip="My CV"
-                isActive={pathname.includes("/app/cv")}
-                className={`${isCollapsed ? "!p-0" : ""} ${
-                  pathname.includes("/app/cv")
-                    ? "bg-[#18354E] hover:bg-[#18354E] text-white"
-                    : "hover:bg-[#18354E] hover:text-white"
+          {/* Menu Section */}
+          <div className="px-2">
+            {isOpen && <p className="mb-2 px-2 text-xs font-semibold uppercase text-color-text animate-fadeIn">Menu</p>}
+
+            {/* Conversation */}
+            <Link
+              href="/app/conversation"
+              className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
+                isActive("/app/conversation") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+              }`}
+            >
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/conversation.svg" alt="Conversation" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                <Link href="/app/cv" className="flex items-center w-full relative sidebar-transition">
-                  <div className="flex items-center justify-center w-10 h-10">
-                    <FileText className={`h-5 w-5 ${pathname.includes("/app/cv") ? "text-white" : "hover:text-white"}`} />
-                  </div>
-                  <span
-                    className={`sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto ml-3"
-                    } ${pathname.includes("/app/cv") ? "text-white" : ""}`}
-                  >
-                    My CV
-                  </span>
-                  <span
-                    className={`absolute right-2 rounded hot-badge px-1.5 py-0.5 text-[10px] font-medium sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
-                    }`}
-                  >
-                    Hot
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+                Conversation
+              </span>
+            </Link>
 
-            {/* My Interview */}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip="My Interview"
-                isActive={pathname.includes("/app/interview")}
-                className={`${isCollapsed ? "!p-0" : ""} ${
-                  pathname.includes("/app/interview")
-                    ? "bg-[#18354E] hover:bg-[#18354E] text-white"
-                    : "hover:bg-[#18354E] hover:text-white"
+            {/* Writing */}
+            <Link
+              href="/app/writing"
+              className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
+                isActive("/app/writing") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+              }`}
+            >
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/writing.svg" alt="Writing" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                <Link href="/app/interview" className="flex items-center w-full relative sidebar-transition">
-                  <div className="flex items-center justify-center w-10 h-10">
-                    <FileText className={`h-5 w-5 ${pathname.includes("/app/interview") ? "text-white" : "hover:text-white"}`} />
-                  </div>
-                  <span
-                    className={`sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto ml-3"
-                    } ${pathname.includes("/app/interview") ? "text-white" : ""}`}
-                  >
-                    My Interview
-                  </span>
-                  <span
-                    className={`absolute right-2 rounded hot-badge px-1.5 py-0.5 text-[10px] font-medium sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100"
-                    }`}
-                  >
-                    Hot
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+                Writing
+              </span>
+            </Link>
 
+            {/* Vocabulary */}
+            <Link
+              href="/app/vocabulary"
+              className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
+                isActive("/app/vocabulary") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+              }`}
+            >
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/vocabulary.svg" alt="Vocabulary" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
+                }`}
+              >
+                Vocabulary
+              </span>
+            </Link>
+          </div>
+
+          {/* Divider - only show when sidebar is open */}
+          {isOpen && <div className="my-4 border-t border-color-border-secondary mx-2 animate-fadeIn" />}
+
+          {/* Shop & Help */}
+          <div className="px-2">
             {/* Shop */}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip="Shop"
-                isActive={pathname.includes("/app/shop")}
-                className={`${isCollapsed ? "!p-0" : ""} ${
-                  pathname.includes("/app/shop")
-                    ? "bg-[#18354E] hover:bg-[#18354E] text-white"
-                    : "hover:bg-[#18354E] hover:text-white"
+            <Link
+              href="/app/shop"
+              className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
+                isActive("/app/shop") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+              }`}
+            >
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/shop.svg" alt="Shop" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                <Link href="/app/shop" className="flex items-center w-full sidebar-transition">
-                  <div className="flex items-center justify-center w-10 h-10">
-                    <ShoppingCart className={`h-5 w-5 ${pathname.includes("/app/shop") ? "text-white" : "hover:text-white"}`} />
-                  </div>
-                  <span
-                    className={`sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto ml-3"
-                    } ${pathname.includes("/app/shop") ? "text-white" : ""}`}
-                  >
-                    Shop
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+                Shop
+              </span>
+            </Link>
 
             {/* Help */}
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                asChild
-                tooltip="Help"
-                isActive={pathname.includes("/app/help")}
-                className={`${isCollapsed ? "!p-0" : ""} ${
-                  pathname.includes("/app/help")
-                    ? "bg-[#18354E] hover:bg-[#18354E] text-white"
-                    : "hover:bg-[#18354E] hover:text-white"
+            <Link
+              href="/app/help"
+              className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
+                isActive("/app/help") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+              }`}
+            >
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/help.svg" alt="Help" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                <Link href="/app/help" className="flex items-center w-full sidebar-transition">
-                  <div className="flex items-center justify-center w-10 h-10">
-                    <HelpCircle className={`h-5 w-5 ${pathname.includes("/app/help") ? "text-white" : "hover:text-white"}`} />
-                  </div>
-                  <span
-                    className={`sidebar-transition ${
-                      isCollapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto ml-3"
-                    } ${pathname.includes("/app/help") ? "text-white" : ""}`}
-                  >
-                    Help
-                  </span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
+                Help
+              </span>
+            </Link>
+          </div>
         </div>
-      </SidebarContent>
 
-      <SidebarFooter className="flex justify-center items-center" style={{ backgroundColor: "#021A30" }}>
-        <div
-          className={`p-4 text-xs text-primary-foreground/50 transition-opacity sidebar-transition text-center ${
-            isCollapsed ? "opacity-0 h-0 overflow-hidden" : "opacity-100 h-auto"
-          }`}
+        {/* Footer - only show when sidebar is open */}
+        {isOpen && (
+          <div className="p-4 text-center animate-fadeIn">
+            <div className="text-xs text-color-text/50">© 2025 Lingora</div>
+          </div>
+        )}
+      </div>
+
+      {/* Toggle Button - aligned with Dashboard menu */}
+      <div
+        className="fixed z-40 transition-all duration-300 ease-in-out top-[105px]"
+        style={{ left: isOpen ? "calc(var(--sidebar-width) + 0px)" : "calc(var(--sidebar-width) + 0px)" }}
+      >
+        <button
+          onClick={toggleSidebar}
+          className="flex h-10 w-12 items-center justify-center rounded-br-lg bg-quaternary text-white shadow-md hover:bg-quaternary/80 transition-all duration-300"
         >
-          © 2025 intervyou.ai
-        </div>
-      </SidebarFooter>
-    </Sidebar>
+          <Menu className="h-5 w-5 text-white" />
+        </button>
+      </div>
+
+      {/* Main content margin adjuster */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          marginLeft: `var(--sidebar-width)`,
+          transition: "margin-left 0.3s ease-in-out",
+        }}
+      />
+    </>
   )
 }

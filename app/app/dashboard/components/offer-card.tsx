@@ -1,18 +1,26 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card"
 
 export function OfferCard() {
   return (
-    <Card className="border-[#0B344C] bg-gradient-to-r from-[#0E63A9] to-[#21B5FE] text-white overflow-hidden relative">
-      <CardContent className="p-8 relative z-10">
+    <Card className="border-[#0B344C] bg-quaternary text-white overflow-hidden relative h-[140px]">
+      <CardContent className="p-4 relative z-10 h-full flex flex-col justify-center">
         <div>
-          <h3 className="text-3xl font-medium">
+          <h3 className="text-2xl font-medium">
             Take your <span className="font-bold">Best Offer</span> here.
           </h3>
-          <p className="mt-2 text-lg">Buy your card and token now!</p>
+          <p className="mt-1 text-base">Buy your card and token now!</p>
         </div>
       </CardContent>
-      {/* Crown SVG */}
-      <div className="absolute bottom-0 right-0 opacity-30 z-0">
+      {/* Tag SVG */}
+      <div className="absolute bottom-0 right-0 opacity-80 z-0">
+        <Image
+          src="/images/dashboard/tag.svg"
+          alt="Tag"
+          width={128}
+          height={128}
+          className="w-32 h-32 brightness-200"
+        />
       </div>
     </Card>
   )

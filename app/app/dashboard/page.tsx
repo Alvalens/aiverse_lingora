@@ -1,30 +1,53 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
-import { useEffect } from "react";
-import { useTokenBalance } from "@/hooks/useTokenBalance";
-import AuthToast from "@/components/auth-toast";
+import { TotalTokens } from "./components/total-tokens";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { ReferralCard } from "./components/referral-card";
+import { ReferralMilestones } from "./components/referral-milestones"
+import { ProgressSection } from "./components/progress-section";
+import { TotalPractices } from "./components/total-practices";
+import { OfferCard } from "./components/offer-card";
 
-export default function Page() {
-  const { data: session, status } = useSession();
-  const { data: tokenBalance } = useTokenBalance();
-  
-
-  useEffect(() => {
-    console.log("Session data:", session);
-  }, [session]);
-
-  if (status === "loading") {
-    return <p>Loading...</p>;
-  }
+export default function DashboardPage() {
+  // Static data
+  const userName = "Guest User";
+  const tokens = 125;
 
   return (
-    <div>
-      <AuthToast />
-      <h1>Welcome to the Dashboard</h1>
-      {session?.user?.email && <p>Logged in as: {session.user.email}</p>}
-      Your token is {tokenBalance?.token} <br />
-      <button onClick={() => signOut()}>Logout</button>
+    <div className="h-full space-y-8 text-white pt-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-color-text">
+            Welcome,{" "}
+            <span className="bg-clip-text text-tertiary">
+              {userName}!
+            </span>
+          </h1>
+          <p className="text-color-text">
+            See how we help your team solve today biggest challenges.
+          </p>
+        </div>
+        <div className="flex items-center gap-4">
+          <LanguageSwitcher />
+        </div>
+      </div>
+
+      <div className="grid gap-8 md:grid-cols-3">
+        <TotalTokens tokens={tokens} />
+        <ReferralCard />
+        <ReferralMilestones />
+      </div>
+
+      <div className="grid gap-8 md:grid-cols-2">
+        <div className="flex flex-col gap-8">
+          <ProgressSection />
+        </div>
+
+        <div className="flex flex-col gap-8">
+          <TotalPractices />
+          <OfferCard />
+        </div>
+      </div>
     </div>
   );
 }

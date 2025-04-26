@@ -24,14 +24,14 @@ const STATIC_DATA = {
 
 export function TotalPractices() {
   return (
-    <Card className="relative border-[#0B344C] bg-tertiary h-[310px]">
+    <Card className="relative border-[#0B344C] bg-secondary h-[225px]">
       <CardHeader className="flex flex-row items-center justify-between pb-2 border-b border-[#0B344C]">
-        <CardTitle className="text-base font-bold text-white">
+        <CardTitle className="text-base font-bold text-color-text">
           Total Practices
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-5xl font-bold text-white mt-4">
+        <div className="text-4xl font-bold text-color-text mt-4">
           {STATIC_DATA.practiceToday} times
         </div>
       </CardContent>
@@ -39,9 +39,8 @@ export function TotalPractices() {
       <Dialog>
         <DialogTrigger asChild>
           <Button
-            variant="secondary"
             size="sm"
-            className="absolute bottom-4 right-4 h-7 px-2 text-base bg-secondary text-black hover:bg-secondary/90"
+            className="absolute bottom-4 right-4 h-7 px-3 text-base bg-gradient-to-br from-quaternary to-tertiary text-primary rounded-lg border-0 hover:opacity-90"
           >
             See More
           </Button>

@@ -12,9 +12,9 @@ export function TokenDisplay({ tokens, isLoading, error }: TokenDisplayProps) {
   return (
     <Button
       asChild
-      className="flex h-9 items-center rounded-full px-4 text-secondary-foreground"
+      className="flex h-9 items-center rounded-full px-4 text-secondary"
       style={{
-        background: "linear-gradient(to right, #0E63A9, #21B5FE)",
+        background: "linear-gradient(to right, var(--color-quaternary), var(--color-tertiary))",
       }}
     >
       <a href="/app/shop" className="flex items-center">

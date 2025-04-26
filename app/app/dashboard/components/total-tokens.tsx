@@ -9,24 +9,23 @@ interface TotalTokensProps {
 
 export function TotalTokens({ tokens }: TotalTokensProps) {
   return (
-    <Card className="border-[#0B344C] bg-tertiary h-[175px] w-full">
-      <CardHeader className="pb-1 pt-3 border-b border-[#0B344C]">
-        <CardTitle className="text-base font-bold text-white">Total Tokens</CardTitle>
+    <Card className="border-[#0B344C] bg-secondary w-full h-auto">
+      <CardHeader className="border-b border-[#0B344C]">
+        <CardTitle className="text-base font-bold text-color-text">Total Tokens</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col justify-between h-[calc(175px-44px)] pb-3">
-        <div className="flex items-center gap-2 mt-3">
+      <CardContent className="flex flex-col justify-between gap-4 pt-4">
+        <div className="flex items-center gap-2">
           <Image
-            src="/images/dashboard/coins-gradient.svg"
+            src="/images/dashboard/coins-gradient-fix.svg"
             alt="Coins"
             width={36}
             height={36}
             className="mr-2"
           />
-          <span className="text-3xl font-bold text-white">{tokens}</span>
+          <span className="text-3xl font-bold text-color-text">{tokens}</span>
         </div>
-
         <Link href="/app/shop" passHref>
-          <Button className="w-full h-9 text-base bg-secondary text-black hover:bg-secondary/90 mt-auto rounded-lg">
+          <Button className="w-full h-9 text-base text-white rounded-lg bg-gradient-to-br from-quaternary to-tertiary border-0 hover:opacity-90 transition">
             Go to Shop
           </Button>
         </Link>
