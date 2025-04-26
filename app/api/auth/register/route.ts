@@ -7,7 +7,6 @@ export async function POST(request: Request) {
         const { name, email, password } = await request.json();
         console.log(email);
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await prisma.user.create({
@@ -18,10 +17,15 @@ export async function POST(request: Request) {
             },
         });
 
-        return NextResponse.json({ ok: true }, { status: 201 });
+        return NextResponse.json({ message: "User registered successfully." }, { status: 201 });
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ ok: false }, { status: 500 });
+        return NextResponse.json(
+			{
+				error: "An error occurred while processing your request. Please try again later.",
+			},
+			{ status: 500 }
+		);
     }
 }
 

@@ -10,12 +10,12 @@ export async function GET(
 	{ params }: { params: { id: string } }
 ) {
 	try {
-		const session = await getServerSession(authOptions);
-
-		if (!session || !session.user) {
-			return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-				status: 401,
-			});
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
 		}
 
 		const id = params.id;
@@ -27,11 +27,10 @@ export async function GET(
 			);
 		}
 
-		// Get writing session
 		const essayAnalysis = await prisma.essayAnalysis.findUnique({
 			where: {
 				id,
-				userId: session.user.id, // Ensure the user can only access their own sessions
+				userId: user_id,
 			},
 		});
 
@@ -42,7 +41,6 @@ export async function GET(
 			);
 		}
 
-		// Return the writing session
 		return new NextResponse(JSON.stringify(essayAnalysis), {
 			status: 200,
 		});

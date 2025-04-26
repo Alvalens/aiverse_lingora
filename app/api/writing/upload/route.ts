@@ -26,12 +26,12 @@ const ensureDirectoriesExist = async () => {
 
 export async function POST(request: NextRequest) {
 	try {
-		const session = await getServerSession(authOptions);
-
-		if (!session || !session.user) {
-			return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-				status: 401,
-			});
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
 		}
 
 		// Process the form data

@@ -22,13 +22,15 @@ function buildPrompt(title: string, description: string) {
   Focus on asking or responding naturally, just as a real conversation would unfold.
   `;
 }
-  
-export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
-    try {
-		const { id: dailyTalkId } = await params;
-		const session = await getServerSession(authOptions);
 
-		if (!session?.user?.id) {
+export async function POST(
+	req: Request,
+	{ params }: { params: Promise<{ id: string }> }
+) {
+	try {
+		const { id: dailyTalkId } = await params;
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
 			return NextResponse.json(
 				{ error: "Unauthorized" },
 				{ status: 401 }
@@ -38,11 +40,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 		const dailyTalkSession = await prisma.dailyTalkSession.findUnique({
 			where: {
 				id: dailyTalkId,
-				userId: session.user.id,
+				userId: user_id,
 			},
 		});
 
-		if (!dailyTalkSession || dailyTalkSession.userId !== session.user.id) {
+		if (!dailyTalkSession || dailyTalkSession.userId !== user_id) {
 			return NextResponse.json(
 				{ error: "Daily talk session not found" },
 				{ status: 404 }
@@ -51,7 +53,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
 		if (dailyTalkSession.endedAt !== null) {
 			return NextResponse.redirect(
-				new URL(`/app/conversation/daily-talk/${dailyTalkId}/history`, req.url)
+				new URL(
+					`/app/conversation/daily-talk/${dailyTalkId}/history`,
+					req.url
+				)
 			);
 		}
 
@@ -144,10 +149,10 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 			return NextResponse.json({ history, ended });
 		}
 	} catch (error) {
-        console.error("Error in POST /api/conversations/daily-talk/id", error);
+		console.error("Error in POST /api/conversations/daily-talk/id", error);
 		return NextResponse.json(
-            { error: "Internal Server Error" },
-            { status: 500 }
-        );
-    }
+			{ error: "Internal Server Error" },
+			{ status: 500 }
+		);
+	}
 }

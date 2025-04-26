@@ -8,9 +8,7 @@ import path from "path";
 
 export async function POST() {
 	try {
-		const session = await getServerSession(authOptions);
-		const user_id = session?.user?.id;
-
+		const user_id = (await getServerSession(authOptions))?.user?.id;
 		if (!user_id) {
 			return NextResponse.json(
 				{ error: "Unauthorized" },

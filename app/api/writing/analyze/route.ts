@@ -34,12 +34,12 @@ export async function POST(request: NextRequest) {
 		// Ensure required directories exist
 		await ensureDirectoriesExist();
 
-		const session = await getServerSession(authOptions);
-
-		if (!session || !session.user) {
-			return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-				status: 401,
-			});
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
 		}
 
 		const { filePath } = await request.json();
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 			const fileName = path.basename(filePath);
 			const writingResult = await prisma.essayAnalysis.create({
 				data: {
-					userId: session.user.id,
+					userId: user_id as string,
 					originalFilename: fileName,
 					overallSuggestion: parsedResult.overallSuggestion,
 					score: parsedResult.score,

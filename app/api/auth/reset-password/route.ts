@@ -13,7 +13,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Temukan user berdasarkan email
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
       return NextResponse.json(
@@ -22,7 +21,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validasi apakah akun telah diverifikasi
     if (user.emailVerified === null) {
       return NextResponse.json(
         { error: "Your account is not verified. Please verify your email before resetting your password." },
@@ -30,7 +28,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Ambil record ForgotVerificationToken untuk purpose FORGOT
     const tokenRecord = await prisma.forgotVerificationToken.findUnique({
       where: { userId_purpose: { userId: user.id, purpose: "FORGOT" } },
     });
@@ -41,7 +38,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validasi token dan expiry
     if (tokenRecord.token !== token) {
       return NextResponse.json(
         { error: "Invalid token. Please request a new password reset link." },
@@ -55,16 +51,13 @@ export async function POST(req: Request) {
       );
     }
 
-    // Hash password baru menggunakan bcryptjs
     const hashedPassword = await hash(newPassword, 10);
 
-    // Update password user
     await prisma.user.update({
       where: { email },
       data: { password: hashedPassword },
     });
 
-    // Hapus record ForgotVerificationToken setelah reset
     await prisma.forgotVerificationToken.delete({
       where: { userId_purpose: { userId: user.id, purpose: "FORGOT" } },
     });

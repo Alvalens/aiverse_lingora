@@ -13,7 +13,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validasi format email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
@@ -27,7 +26,6 @@ export async function POST(req: Request) {
     const token = crypto.randomBytes(32).toString("hex");
     const expiry = new Date(now.getTime() + 15 * 60 * 1000);
 
-    // Cek apakah sudah ada record token untuk purpose VERIFICATION
     const existingToken = await prisma.forgotVerificationToken.findUnique({
       where: {
         userId_purpose: { userId, purpose: "VERIFICATION" },

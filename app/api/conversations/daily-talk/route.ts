@@ -15,11 +15,9 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// Parse request body
 		const body = await req.json();
 		const { theme, description } = body;
 
-		// Validate input
 		if (!theme) {
 			return NextResponse.json(
 				{ error: "Theme is required" },
@@ -27,7 +25,6 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// Check user token balance
 		const tokenBalance = await prisma.tokenBalance.findUnique({
 			where: { userId: session.user.id },
 		});
@@ -39,7 +36,6 @@ export async function POST(req: Request) {
 			);
 		}
 
-		// Create a new daily talk session
 		const dailyTalkSession = await prisma.dailyTalkSession.create({
 			data: {
 				userId: session.user.id,
@@ -48,7 +44,6 @@ export async function POST(req: Request) {
 			},
 		});
 
-		// Deduct tokens
 		await prisma.tokenBalance.update({
 			where: { userId: session.user.id },
 			data: {
@@ -58,7 +53,6 @@ export async function POST(req: Request) {
 			},
 		});
 
-		// Return the session ID
 		return NextResponse.json(
 			{
 				id: dailyTalkSession.id,
@@ -76,12 +70,10 @@ export async function POST(req: Request) {
 	}
 }
 
-
 export async function GET() {
 	try {
-		const session = await getServerSession(authOptions);
-
-		if (!session?.user?.id) {
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
 			return NextResponse.json(
 				{ error: "Unauthorized" },
 				{ status: 401 }
@@ -89,7 +81,7 @@ export async function GET() {
 		}
 
 		const sessions = await prisma.dailyTalkSession.findMany({
-			where: { userId: session.user.id },
+			where: { userId: user_id },
 			orderBy: { createdAt: "desc" },
 		});
 
