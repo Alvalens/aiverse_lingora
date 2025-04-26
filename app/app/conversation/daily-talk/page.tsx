@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,13 @@ type Theme = {
   description: string;
 };
 
+type DailyTalkSession = {
+  id: string;
+  theme: string;
+  description: string;
+  createdAt: string;
+};
+
 export default function CreateConversationPage() {
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -18,6 +25,27 @@ export default function CreateConversationPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [themes, setThemes] = useState<Theme[]>([]);
   const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
+
+  // State for history
+  const [history, setHistory] = useState<DailyTalkSession[]>([]);
+  const [isHistoryLoading, setIsHistoryLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHistory = async () => {
+      setIsHistoryLoading(true);
+      try {
+        const response = await fetch("/api/conversations/daily-talk");
+        if (!response.ok) throw new Error("Failed to fetch history");
+        const data = await response.json();
+        setHistory(data.sessions || []);
+      } catch {
+        toast.error("Failed to load history.");
+      } finally {
+        setIsHistoryLoading(false);
+      }
+    };
+    fetchHistory();
+  }, []);
 
   if (status === "loading") {
     return <div className="flex justify-center items-center h-screen">Loading...</div>;
@@ -42,13 +70,12 @@ export default function CreateConversationPage() {
       }
 
       const data = await response.json();
-      // Map title -> theme for frontend compatibility
       const mappedThemes = data.themes.map((t: any) => ({
-        theme: t.title, // support both keys just in case
+        theme: t.title,
         description: t.description
       }));
       setThemes(mappedThemes);
-      setSelectedTheme(null); // Reset selection when generating new themes
+      setSelectedTheme(null);
     } catch (error) {
       console.error("Error generating themes:", error);
       toast.error("Failed to generate themes. Please try again.");
@@ -90,9 +117,9 @@ export default function CreateConversationPage() {
       setIsLoading(false);
     }
   };
-  // Handle theme selection
+
   const handleThemeSelection = (theme: Theme) => {
-    setSelectedTheme({ ...theme }); // Create a new object to ensure state update
+    setSelectedTheme({ ...theme });
   };
 
   return (
@@ -141,7 +168,7 @@ export default function CreateConversationPage() {
         )}
 
         {themes.length > 0 && (
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-8">
             <Button
               onClick={startConversation}
               disabled={isLoading || !selectedTheme}
@@ -151,6 +178,36 @@ export default function CreateConversationPage() {
             </Button>
           </div>
         )}
+
+        {/* History Section */}
+        <div>
+          <h2 className="text-lg font-semibold mb-2 text-color-text">Your Daily Talk History</h2>
+          {isHistoryLoading ? (
+            <p className="text-gray-300">Loading history...</p>
+          ) : history.length === 0 ? (
+            <p className="text-gray-300">No history found.</p>
+          ) : (
+            <ul className="space-y-4 max-h-64 overflow-y-auto">
+              {history.map((item) => (
+                <li
+                  key={item.id}
+                  className="bg-tertiary rounded p-3 flex flex-col cursor-pointer hover:bg-[#0E3756] transition"
+                  onClick={() => router.push(`/app/conversation/daily-talk/${item.id}/result`)}
+                >
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold">Theme: {item.theme}</span>
+                    <span className="text-xs text-gray-300">
+                      {new Date(item.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="text-sm mt-1 truncate">
+                    {item.description ? item.description.slice(0, 80) + (item.description.length > 80 ? "..." : "") : <span className="italic text-gray-400">No description</span>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );
