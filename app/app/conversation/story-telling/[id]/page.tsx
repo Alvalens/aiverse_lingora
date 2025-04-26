@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
+import { useSpeechSynthesis } from "@/hooks/useSpeechSynthesis";
 import { toast } from "react-hot-toast";
+import { Volume2 } from "lucide-react";
 
 export default function StoryTellingSessionPage({ params }: { params: Promise<{ id: string }> }) {
   // Unwrap params once with use()
@@ -19,14 +21,20 @@ export default function StoryTellingSessionPage({ params }: { params: Promise<{ 
   const [transcribedText, setTranscribedText] = useState("");
   const [isTranscribing, setIsTranscribing] = useState(false);
 
-  // Basic recorder setup
+  // Speech synthesis for instructions
+  const {
+    isSpeaking,
+    speakText,
+  } = useSpeechSynthesis();
+
+  // Basic recorder setup with a 2-minute maximum duration
   const {
     isRecording,
     audioBlob,
     startRecording: baseStartRecording,
     stopRecording: baseStopRecording,
     resetAudioBlob
-  } = useAudioRecorder();
+  } = useAudioRecorder({ maxDuration: 120000 }); // 2 minutes timeout
 
   // Fetch the image path for this session
   useEffect(() => {
@@ -84,14 +92,37 @@ export default function StoryTellingSessionPage({ params }: { params: Promise<{ 
 
   // Override stopRecording to automatically transcribe
   const stopRecording = () => {
-    baseStopRecording();
+    // Pass the transcribeAudio function directly as the callback
+    baseStopRecording(transcribeAudio);
+  };
 
-    // Use a small timeout to allow audioBlob to be set
-    setTimeout(() => {
-      if (audioBlob) {
-        transcribeAudio(audioBlob);
+  // Function to start recording
+  const startRecording = () => {
+    setTranscribedText(""); // Clear previous transcription
+    baseStartRecording();
+  };
+
+  // Play instructions and auto-start recording when done
+  const playInstructionsAndRecord = () => {
+    // Stop any active recording or speech
+    if (isRecording) {
+      stopRecording();
+    }
+
+    // Instructions text
+    const instructions = "Look at the image carefully. When the audio ends, recording will start automatically. Describe what you see in detail, including people, objects, settings, and any notable aspects of the image.";
+
+    // Speak the instructions, then auto-start recording when done
+    speakText(instructions, {
+      onEnd: () => {
+        // Short delay before starting recording
+        setTimeout(() => {
+          // Start recording automatically when instructions finish
+          startRecording();
+          toast.success("Recording started automatically! Speak now.");
+        }, 500);
       }
-    }, 500);
+    });
   };
 
   const handleSubmit = async () => {
@@ -160,16 +191,27 @@ export default function StoryTellingSessionPage({ params }: { params: Promise<{ 
           <p className="text-center mt-4">
             Look at the image carefully and describe what you see. Try to be detailed in your description.
           </p>
+
+          {/* Instructions button */}
+          <Button
+            onClick={playInstructionsAndRecord}
+            disabled={isSpeaking || isRecording}
+            className="mt-4 bg-[#164869] hover:bg-[#0E3756] flex items-center"
+          >
+            <Volume2 className="mr-2 h-4 w-4" />
+            {isSpeaking ? "Speaking..." : "Listen to Instructions & Auto-Record"}
+          </Button>
         </div>
 
         <div className="flex flex-col items-center mb-8">
           <div className="flex gap-4 mb-6 justify-center">
             <Button
-              onClick={isRecording ? stopRecording : baseStartRecording}
+              onClick={isRecording ? stopRecording : startRecording}
+              disabled={isSpeaking}
               className={`px-6 py-2 rounded ${isRecording ? "bg-red-600 hover:bg-red-700" : "bg-[#0E63A9] hover:bg-blue-700"
                 }`}
             >
-              {isRecording ? "Stop Recording" : "Start Recording"}
+              {isRecording ? "Stop Recording" : "Start Recording Manually"}
             </Button>
 
             {!isRecording && audioBlob && (
@@ -181,6 +223,12 @@ export default function StoryTellingSessionPage({ params }: { params: Promise<{ 
               </Button>
             )}
           </div>
+
+          {isSpeaking && (
+            <div className="mt-2 text-center">
+              <p>Listening to instructions... Recording will start automatically when finished.</p>
+            </div>
+          )}
 
           {isTranscribing && (
             <div className="mt-2 text-center">
