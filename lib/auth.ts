@@ -122,21 +122,15 @@ export const authOptions: NextAuthOptions = {
   
       if (account?.provider === "google") {
         try {
-          console.log("Google provided image URL:", user.image);
           const imageUrl = user.image;
           const dbUser = await prisma.user.findUnique({
             where: { email: user.email || "" },
             include: { education: true, experience: true, skills: true },
           });
           if (dbUser) {
-            console.log("Database user before update:", {
-              id: dbUser.id,
-              name: dbUser.name,
-              image: dbUser.image,
-              agreement: dbUser.agreement,
-            });
+
             // Perbarui data khusus akun Google, termasuk menandai email sebagai terverifikasi
-            const updatedUser = await prisma.user.update({
+            await prisma.user.update({
               where: { id: dbUser.id },
               data: {
                 name: user.name || dbUser.name,
@@ -145,11 +139,9 @@ export const authOptions: NextAuthOptions = {
                 language: dbUser.language || "ID",
                 emailVerified: new Date(),
               },
-              select: { id: true, name: true, image: true, agreement: true, emailVerified: true },
+              select: { id: true, name: true, image: true, agreement: true },
             });
-            console.log("Updated user with Google data:", updatedUser);
           } else {
-            console.log("No database user found for Google account:", user.email);
           }
         } catch (error) {
           console.error("Error processing Google sign-in:", error);
@@ -212,13 +204,11 @@ export const authOptions: NextAuthOptions = {
         agreement: !!token.agreement,
         emailVerified: !!token.emailVerified,
       };
-      console.log("Session Information:", session);
       return session;
     },
   },
   events: {
     async createUser({ user }) {
-      console.log("Create user event:", { id: user.id, name: user.name, image: user.image });
       await prisma.tokenBalance.create({
         data: { userId: user.id, token: 50 },
       });
@@ -227,7 +217,6 @@ export const authOptions: NextAuthOptions = {
         where: { id: user.id },
         data: { role: "USER", language: "ID", agreement: false, emailVerified: null },
       });
-      console.log(`New user created with id ${user.id}, emailVerified set to null`);
     },
     async signIn({ user, account }) {
       if (account?.provider === "email") {
@@ -245,7 +234,6 @@ export const authOptions: NextAuthOptions = {
             where: { id: user.id },
             data: { emailVerified: new Date() },
           });
-          console.log("EmailVerification record updated and user email verified for user:", user.id);
         } catch (error) {
           console.error("Error updating EmailVerification record:", error);
         }

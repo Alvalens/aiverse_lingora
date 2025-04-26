@@ -74,7 +74,6 @@ export default function CreateConversationPage() {
 
     setIsLoading(true);
     try {
-      console.log("Creating conversation with theme:", selectedTheme.theme);
       const response = await fetch("/api/conversations/daily-talk", {
         method: "POST",
         headers: {
@@ -102,7 +101,6 @@ export default function CreateConversationPage() {
   };
   // Handle theme selection
   const handleThemeSelection = (theme: Theme) => {
-    console.log("Selected theme:", theme); // Debug log
     setSelectedTheme({ ...theme }); // Create a new object to ensure state update
   };
 
