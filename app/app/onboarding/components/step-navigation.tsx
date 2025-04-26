@@ -24,7 +24,7 @@ export default function StepNavigation({
       {!hideBack ? (
         <button
           onClick={onBack}
-          className="py-2 px-4 bg-primary border border-tertiary border-secondary text-color-text rounded-lg transition-colors hover:bg-tertiary hover:text-white"
+          className="py-2 px-4 bg-primary border border-tertiary  text-color-text rounded-lg transition-colors hover:bg-tertiary hover:text-white"
           disabled={isSubmitting}
           type="button"
         >
@@ -35,7 +35,7 @@ export default function StepNavigation({
       )}
       <button
         onClick={onContinue}
-        className={`py-2 px-6 bg-primary border border-tertiary border-secondary text-color-text rounded-lg transition-colors hover:bg-tertiary hover:text-white ${
+        className={`py-2 px-6 bg-primary border border-tertiary  text-color-text rounded-lg transition-colors hover:bg-tertiary hover:text-white ${
           isContinueDisabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={isSubmitting || isContinueDisabled}
