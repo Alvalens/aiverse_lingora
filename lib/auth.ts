@@ -145,7 +145,7 @@ export const authOptions: NextAuthOptions = {
                 language: dbUser.language || "ID",
                 emailVerified: new Date(),
               },
-              select: { id: true, name: true, image: true, agreement: true },
+              select: { id: true, name: true, image: true, agreement: true, emailVerified: true },
             });
             console.log("Updated user with Google data:", updatedUser);
           } else {
