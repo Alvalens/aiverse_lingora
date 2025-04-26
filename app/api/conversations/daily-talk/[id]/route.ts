@@ -51,7 +51,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 
 		if (dailyTalkSession.endedAt !== null) {
 			return NextResponse.redirect(
-				new URL(`/app/conversation/daily-talk${dailyTalkId}/history`, req.url)
+				new URL(`/app/conversation/daily-talk/${dailyTalkId}/history`, req.url)
 			);
 		}
 
