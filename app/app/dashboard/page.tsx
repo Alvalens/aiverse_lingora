@@ -11,7 +11,6 @@ export default function Page() {
   
 
   useEffect(() => {
-    console.log("Session data:", session);
   }, [session]);
 
   if (status === "loading") {

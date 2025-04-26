@@ -118,8 +118,6 @@ export async function POST(
 			);
 		}
 
-		console.log(history);
-
 		if (history.length === 0) {
 			return NextResponse.json(
 				{ error: "No valid conversation exchanges found" },
@@ -138,8 +136,6 @@ export async function POST(
 		const responseText = result.response.text();
 
 		let parsedResponse;
-		console.log(responseText);
-
 		try {
 			let jsonText = responseText;
 			const jsonRegex = /```(?:json)?\s*([\s\S]*?)```/;
@@ -186,7 +182,6 @@ export async function POST(
 		}
 
 		// Ensure suggestions is an array with the expected length
-		console.log(suggestions.length, history.length);
 		if (suggestions.length !== history.length) {
 			return NextResponse.json(
 				{ error: "AI model response format mismatch" },

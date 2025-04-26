@@ -49,7 +49,6 @@ export default function CreateWritingPage() {
       }
 
       const uploadData = await uploadResponse.json();
-      console.log("File uploaded successfully:", uploadData);
 
       // Start analysis
       setIsUploading(false);
@@ -73,7 +72,6 @@ export default function CreateWritingPage() {
       }
 
       const result = await analysisResponse.json();
-      console.log("Analysis complete:", result);
 
       toast.dismiss("analyzing");
       toast.success("Analysis complete!");
