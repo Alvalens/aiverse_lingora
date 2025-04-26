@@ -1,7 +1,6 @@
 "use server";
 
 import { NextRequest, NextResponse } from "next/server";
-import { v4 as uuidv4 } from "uuid";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { getServerSession } from "next-auth";
@@ -65,7 +64,7 @@ export async function POST(request: NextRequest) {
 		const uploadDir = await ensureDirectoriesExist();
 
 		// Generate unique filename
-		const uniqueId = uuidv4();
+		const uniqueId = new Date().getTime();
 		const fileName = `essay-${uniqueId}.pdf`;
 		const filePath = path.join(uploadDir, fileName);
 
