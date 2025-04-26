@@ -1,17 +1,18 @@
 "use client"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
+import type { Session } from "next-auth";
 import ErrorMessage from "@/components/error-message"
 import StepNavigation from "../step-navigation"
 
 interface AgreementStepProps {
-  agreement: boolean
-  setAgreement: (value: boolean) => void
-  onBack: () => void
-  onContinue: () => void
-  error: string
-  setError: (value: string) => void
-  updateSession: (data: any) => Promise<any>
+  agreement: boolean;
+  setAgreement: (value: boolean) => void;
+  onBack: () => void;
+  onContinue: () => void;
+  error: string;
+  setError: (value: string) => void;
+  updateSession: (data: Partial<Session["user"]>) => Promise<Session | null>; // <-- fix here
 }
 
 export default function AgreementStep({

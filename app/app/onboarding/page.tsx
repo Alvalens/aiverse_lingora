@@ -1,17 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
-import { DefaultSession } from "next-auth"
-
-// Extend the Session type to include emailVerified
-declare module "next-auth" {
-  interface Session {
-    user: {
-      emailVerified?: boolean
-      agreement?: boolean
-    } & DefaultSession["user"]
-  }
-}
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 
@@ -23,7 +12,7 @@ import LanguageStep from "./components/step/language-step"
 import DiscoveryStep from "./components/step/discovery-step"
 import ReferralStep from "./components/step/referral-step"
 import AgreementStep from "./components/step/agreement-step"
-import CVUploadStep from "./components/step/cv-upload-step"
+
 import CompleteStep from "./components/step/complete-step"
 import EmailVerificationStep from "./components/step/email-verification-step"
 
@@ -31,7 +20,7 @@ export default function OnboardingPage() {
   const { data: session, update: updateSession, status } = useSession()
   const router = useRouter()
 
-  const PROGRESS_LABELS = ["Email", "Introduction", "Language", "Discovery", "Referral", "Agreement", "CV", "Complete"]
+  const PROGRESS_LABELS = ["Email", "Introduction", "Language", "Discovery", "Referral", "Agreement", "Complete"]
 
   const [emailTimer, setEmailTimer] = useState(0)
   const [isEmailVerified, setIsEmailVerified] = useState(false)
@@ -43,7 +32,7 @@ export default function OnboardingPage() {
   const [language, setLanguage] = useState<"EN" | "ID">("ID")
   const [sources, setSources] = useState<string[]>([])
   const [agreement, setAgreement] = useState(false)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  
   const [referralInput, setReferralInput] = useState("")
 
   useEffect(() => {
@@ -180,15 +169,6 @@ export default function OnboardingPage() {
           />
         )
       case 6:
-        return (
-          <CVUploadStep
-            selectedFile={selectedFile}
-            setSelectedFile={setSelectedFile}
-            onBack={() => setCurrentStep(currentStep - 1)}
-            onContinue={() => setCurrentStep(currentStep + 1)}
-          />
-        )
-      case 7:
         return <CompleteStep onComplete={completeOnboarding} />
       default:
         return null

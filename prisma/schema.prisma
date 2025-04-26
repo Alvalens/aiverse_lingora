@@ -34,36 +34,35 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
+  id            String    @id @default(cuid())
+  email         String    @unique
   name          String
   employment    String?
   about         String?
-  role          Role           @default(USER)
+  role          Role      @default(USER)
   password      String?
   emailVerified DateTime?
   image         String?
-  language      language       @default(ID)
-  agreement     Boolean        @default(false)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  language      language  @default(ID)
+  agreement     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  tokens        TokenBalance[]
-  education     Education[]
-  experience    Experience[]
-  skills        Skill[]
-  tracking      UserTracking[]
-  transactions  Transaction[]
-
-
-
-  referralUsagesReceived ReferralUser[] @relation("ReferredUser")
-  referralCode ReferralCode?
+  accounts               Account[]
+  sessions               Session[]
+  tokens                 TokenBalance[]
+  education              Education[]
+  experience             Experience[]
+  skills                 Skill[]
+  tracking               UserTracking[]
+  transactions           Transaction[]
+  dailyTalkSession       dailyTalkSession[]
+  storytellingSession    storyTellingSession[]
+  debateSession          debateSession[]
+  referralUsagesReceived ReferralUser[]        @relation("ReferredUser")
+  referralCode           ReferralCode?
 
   forgotVerificationTokens ForgotVerificationToken[]
-  
 }
 
 model Education {
@@ -72,8 +71,8 @@ model Education {
   degree          String
   institutionName String
   startDate       DateTime
-  endDate         DateTime? 
-  presentDate     String? 
+  endDate         DateTime?
+  presentDate     String?
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -83,10 +82,10 @@ model Experience {
   userId           String
   companyName      String
   role             String
-  skills           String 
+  skills           String
   startDate        DateTime
-  endDate          DateTime? 
-  presentDate      String? 
+  endDate          DateTime?
+  presentDate      String?
   responsibilities String
   user             User      @relation(fields: [userId], references: [id])
 }
@@ -172,7 +171,6 @@ model Transaction {
   tokenPack TokenPack @relation(fields: [tokenPackId], references: [id])
 }
 
-
 model UserTracking {
   id        Int      @id @default(autoincrement())
   userId    String
@@ -195,29 +193,102 @@ model ReferralCode {
 }
 
 model ReferralUser {
-  id               String       @id @default(cuid())
+  id               String @id @default(cuid())
   referralCodeId   String
   referredUserId   String
   referredUserName String
 
-  referralCode     ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Cascade)
-  referredUser     User         @relation("ReferredUser", fields: [referredUserId], references: [id], onDelete: Cascade)
+  referralCode ReferralCode @relation(fields: [referralCodeId], references: [id], onDelete: Cascade)
+  referredUser User         @relation("ReferredUser", fields: [referredUserId], references: [id], onDelete: Cascade)
 
   @@unique([referralCodeId, referredUserId])
 }
 
-
-
 model ForgotVerificationToken {
-  id        String         @id @default(cuid())
+  id        String       @id @default(cuid())
   userId    String
   token     String
   expiry    DateTime
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   purpose   TokenPurpose
 
-  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, purpose])
+}
+
+model dailyTalkSession {
+  id          String    @id @default(cuid())
+  userId      String
+  theme       String
+  description String    @db.Text
+  suggestions Json
+  duration    Int       @default(5)
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+  score       Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  questions dailyTalkQuestion[]
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model dailyTalkQuestion {
+  id          String   @id @default(cuid())
+  dailyTalkId String
+  question    String   @db.Text
+  answer      String?  @db.Text
+  suggestion  String?  @db.Text
+  reason      String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  dailyTalk dailyTalkSession @relation(fields: [dailyTalkId], references: [id], onDelete: Cascade)
+}
+
+model storyTellingSession {
+  id          String   @id @default(cuid())
+  userId      String
+  theme       String
+  description String   @db.Text
+  image       String?
+  userAnswer  String?  @db.Text
+  suggestions Json
+  score       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model debateSession {
+  id          String    @id @default(cuid())
+  userId      String
+  theme       String
+  description String    @db.Text
+  suggestions Json
+  duration    Int       @default(5)
+  startedAt   DateTime  @default(now())
+  endedAt     DateTime?
+  score       Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  questions debateQuestion[]
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model debateQuestion {
+  id         String   @id @default(cuid())
+  debateId   String
+  question   String   @db.Text
+  answer     String?  @db.Text
+  suggestion String?  @db.Text
+  reason     String?  @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  debate debateSession @relation(fields: [debateId], references: [id], onDelete: Cascade)
 }

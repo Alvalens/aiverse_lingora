@@ -1,17 +1,17 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useState } from "react";
-import { toast } from "react-hot-toast";
-import ErrorMessage from "@/components/error-message";
+import type React from "react"
+import { useState } from "react"
+import { toast } from "react-hot-toast"
+import ErrorMessage from "@/components/error-message"
 
 interface ReferralStepProps {
-  referralInput: string;
-  setReferralInput: (value: string) => void;
-  onSkip: () => void;
-  onContinue: () => void;
-  error: string;
-  setError: (value: string) => void;
+  referralInput: string
+  setReferralInput: (value: string) => void
+  onSkip: () => void
+  onContinue: () => void
+  error: string
+  setError: (value: string) => void
 }
 
 export default function ReferralStep({
@@ -22,48 +22,43 @@ export default function ReferralStep({
   error,
   setError,
 }: ReferralStepProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleApplyReferral = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+    e.preventDefault()
+    setError("")
     if (!referralInput.trim()) {
-      toast.error("Please enter a referral code or skip this step");
-      return;
+      toast.error("Please enter a referral code or skip this step")
+      return
     }
     try {
-      setIsSubmitting(true);
+      setIsSubmitting(true)
       const response = await fetch("/api/referral/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ referralCode: referralInput.trim() }),
-      });
-      const data = await response.json();
+      })
+      const data = await response.json()
       if (!response.ok) {
-        throw new Error(data.error);
+        throw new Error(data.error)
       }
-      toast.success("Referral code applied successfully!");
-      localStorage.removeItem("referralCode");
-      setReferralInput("");
-      onContinue();
+      toast.success("Referral code applied successfully!")
+      localStorage.removeItem("referralCode")
+      setReferralInput("")
+      onContinue()
     } catch (error) {
-      console.error("Error applying referral code:", error);
-      toast.error(
-        error instanceof Error ? error.message : "Failed to apply referral code"
-      );
+      console.error("Error applying referral code:", error)
+      toast.error(error instanceof Error ? error.message : "Failed to apply referral code")
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="max-w-xl mx-auto text-white">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Referral Code (Optional)
-      </h2>
+      <h2 className="text-2xl font-bold mb-6 text-center">Referral Code (Optional)</h2>
       <p className="mb-6 text-center text-base">
-        If you have a referral code, please enter it below. You may also skip
-        this step.
+        If you have a referral code, please enter it below. You may also skip this step.
       </p>
 
       <ErrorMessage message={error} />
@@ -75,7 +70,7 @@ export default function ReferralStep({
             value={referralInput}
             onChange={(e) => setReferralInput(e.target.value.toUpperCase())}
             placeholder="Enter referral code"
-            className="w-full p-2 border rounded font-mono bg-primary text-white text-base border-gray-300 focus:border-secondary focus:outline-none"
+            className="w-full p-2 border rounded font-mono bg-primary text-white text-base"
           />
           <button
             type="submit"
@@ -89,7 +84,7 @@ export default function ReferralStep({
           <button
             type="button"
             onClick={onSkip}
-            className="absolute left-0 text-white hover:text-secondary underline"
+            className="absolute left-0 text-white underline"
             disabled={isSubmitting}
           >
             Skip
@@ -97,5 +92,5 @@ export default function ReferralStep({
         </div>
       </form>
     </div>
-  );
+  )
 }

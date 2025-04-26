@@ -85,7 +85,7 @@ export default function EmailVerificationStep({
       const limiterRes = await fetch("/api/auth/email-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: session?.user?.email, email }),
+        body: JSON.stringify({ userId: session?.user?.id, email }),
       })
       const limiterData = await limiterRes.json()
       if (!limiterRes.ok) {
@@ -105,8 +105,12 @@ export default function EmailVerificationStep({
       } else {
         toast.error(result?.error || "Error sending verification email.")
       }
-    } catch (error: any) {
-      console.error("Error:", error)
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error:", error.message)
+      } else {
+        console.error("Unknown error:", error)
+      }
       toast.error("Error sending verification email.")
     } finally {
       setIsSubmitting(false)
@@ -173,7 +177,7 @@ export default function EmailVerificationStep({
       {emailTimer > 0 && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <button className="mt-2 text-base text-white hover:text-red-500 underline mx-auto block">Not receiving email?</button>
+            <button className="mt-2 text-base text-red-600 underline mx-auto block">Not receiving email?</button>
           </DialogTrigger>
           <DialogContent className="bg-[#052038] p-6 rounded-lg shadow-lg w-full max-w-md mx-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <button
