@@ -4,7 +4,9 @@ import { NextAuthProvider } from "@/providers/NextAuthProviders";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import Script from "next/script";
 import "./globals.css";
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
+
+import ogImage from "@/public/og-image.jpg";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,14 +52,14 @@ export const metadata: Metadata = {
       "Platform inovatif untuk membantu profesional mempersiapkan wawancara kerja dan meningkatkan CV mereka.",
     url: "https://www.intervyou.me",
     siteName: "Intervyou",
-    // images: [
-    //   {
-    //     url: ogImage.src,
-    //     width: 1200,
-    //     height: 630,
-    //     alt: "Intervyou",
-    //   },
-    // ],
+    images: [
+      {
+        url: ogImage.src,
+        width: 1200,
+        height: 630,
+        alt: "Intervyou",
+      },
+    ],
     locale: "id_ID",
     type: "website",
   },
@@ -91,10 +93,12 @@ export default function RootLayout({
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
       ></Script>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-primary`}
+      >
         <main>
+          <Toaster />
           <ReactQueryProvider>
-          {children}
+            <NextAuthProvider>{children}</NextAuthProvider>
           </ReactQueryProvider>
         </main>
       </body>
