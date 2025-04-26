@@ -105,7 +105,7 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
 
             {/* Conversation */}
             <Link
-              href="/app/conversation"
+              href="/app/conversation/daily-talk"
               className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
                 isActive("/app/conversation") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
               }`}
