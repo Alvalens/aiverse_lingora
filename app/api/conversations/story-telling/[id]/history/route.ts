@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
+	request: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {
@@ -37,7 +38,10 @@ export async function GET(
 		} // Return the image path and other relevant data
 		return NextResponse.json({
 			id: storyTellingSession.id,
-			imagePath: storyTellingSession.image, 
+			imagePath: storyTellingSession.image,
+			userAnswer: storyTellingSession.userAnswer,
+			suggestions: storyTellingSession.suggestions,
+			score: storyTellingSession.score,
 			createdAt: storyTellingSession.createdAt,
 		});
 	} catch (error) {

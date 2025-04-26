@@ -15,13 +15,12 @@ export default function StoryTellingResultPage({ params }: { params: Promise<{ i
   const [isLoading, setIsLoading] = useState(true);
   const [imagePath, setImagePath] = useState("");
   const [userDescription, setUserDescription] = useState("");
-  const [suggestions, setSuggestions] = useState<any>(null);
-
-  // Fetch the session details including suggestions
+  const [suggestions, setSuggestions] = useState<any>(null);  
   useEffect(() => {
     const fetchSessionDetails = async () => {
       try {
-        const response = await fetch(`/api/conversations/story-telling/${id}`);
+        // Fetch data from history endpoint
+        const response = await fetch(`/api/conversations/story-telling/${id}/history`);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -29,7 +28,7 @@ export default function StoryTellingResultPage({ params }: { params: Promise<{ i
         }
 
         const data = await response.json();
-        setImagePath(data.imagePath);
+        setImagePath(data.imagePath || "");
         setUserDescription(data.userAnswer || "");
         setSuggestions(data.suggestions || null);
       } catch (error) {
@@ -42,10 +41,6 @@ export default function StoryTellingResultPage({ params }: { params: Promise<{ i
 
     fetchSessionDetails();
   }, [id]);
-
-  const handleTryAgain = () => {
-    router.push(`/app/conversation/story-telling/${id}`);
-  };
 
   if (isLoading) {
     return (
@@ -123,12 +118,6 @@ export default function StoryTellingResultPage({ params }: { params: Promise<{ i
               className="bg-green-600 hover:bg-green-700 px-6 py-2 rounded"
             >
               Back to Conversations
-            </Button>
-            <Button
-              onClick={handleTryAgain}
-              className="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded"
-            >
-              Try Again
             </Button>
           </div>
         </div>
