@@ -32,7 +32,6 @@ export default function StoryTellingPage() {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-primary">
       <div className="w-full max-w-lg p-6 bg-[#052038] rounded-lg shadow-lg text-white">
@@ -42,13 +41,22 @@ export default function StoryTellingPage() {
           Practice your English by describing images. An AI will generate a random image for you to describe.
         </p>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-8">
           <Button
             onClick={handleCreateStoryTelling}
             disabled={isLoading}
             className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
           >
             {isLoading ? "Creating..." : "Generate Image"}
+          </Button>
+        </div>
+
+        <div className="flex justify-center">
+          <Button
+            onClick={() => router.push("/app/conversation/story-telling/history")}
+            className="bg-[#164869] hover:bg-[#0E3756] text-white px-6 py-2 rounded"
+          >
+            View History
           </Button>
         </div>
       </div>

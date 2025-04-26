@@ -117,10 +117,10 @@ export default function StoryTellingSessionPage({ params }: { params: Promise<{ 
         throw new Error(errorData.error || "Failed to save description");
       }
 
-      toast.success("Your description has been saved successfully!");
+      toast.success("Your description has been saved and analyzed!");
 
-      // Redirect to the conversations page
-      router.push("/app/conversation");
+      // Redirect to the result page
+      router.push(`/app/conversation/story-telling/${id}/result`);
     } catch (error) {
       console.error("Error saving description:", error);
       toast.error("Failed to save your description. Please try again.");
@@ -201,7 +201,7 @@ export default function StoryTellingSessionPage({ params }: { params: Promise<{ 
               disabled={isSubmitting}
               className="bg-green-600 hover:bg-green-700 px-6 py-2 rounded mt-6 w-full"
             >
-              {isSubmitting ? "Submitting..." : "Submit Description"}
+              {isSubmitting ? "Analyzing..." : "Submit Description"}
             </Button>
           </div>
         )}

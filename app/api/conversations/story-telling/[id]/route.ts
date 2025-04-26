@@ -35,11 +35,13 @@ export async function GET(
 				{ error: "Session not found" },
 				{ status: 404 }
 			);
-		}
-		// Return the image path and other relevant data
+		} // Return the image path and other relevant data
 		return NextResponse.json({
 			id: storyTellingSession.id,
 			imagePath: storyTellingSession.image, // This should be a path like '/generated/filename.jpg'
+			userAnswer: storyTellingSession.userAnswer,
+			suggestions: storyTellingSession.suggestions,
+			score: storyTellingSession.score,
 			createdAt: storyTellingSession.createdAt,
 		});
 	} catch (error) {
