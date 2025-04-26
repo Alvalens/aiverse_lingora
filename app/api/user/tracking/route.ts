@@ -35,8 +35,6 @@ export async function POST(req: NextRequest) {
         },
       });
       
-      console.log(`Deleted existing tracking entries for user ${session.user.id}`);
-
       // 2. Create new tracking entries
       const newEntries = [];
       for (const source of sources) {
@@ -48,9 +46,7 @@ export async function POST(req: NextRequest) {
         });
         newEntries.push(entry);
       }
-      
-      console.log(`Created ${newEntries.length} new tracking entries for user ${session.user.id}`);
-      return newEntries;
+            return newEntries;
     });
 
     return NextResponse.json(

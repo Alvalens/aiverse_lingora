@@ -4,12 +4,10 @@ import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 
-
 function generateSuggestions(
 	history: { question: string; answer: string }[],
 	theme: string,
-	description: string,
-	
+	description: string
 ) {
 	if (history.length === 0) {
 		return "No conversation history provided.";
@@ -22,7 +20,7 @@ function generateSuggestions(
 		)
 		.join(", ");
 
-		return `You are a professional English debate coach specializing in structured debate practice.
+	return `You are a professional English debate coach specializing in structured debate practice.
 		Your task is to evaluate each user response as an argument, focusing on:
 		  - Logical coherence and structure
 		  - Persuasiveness and use of evidence
@@ -66,34 +64,33 @@ Debate history: [${conversation}]`;
 export async function POST(
 	req: Request,
 	{ params }: { params: Promise<{ id: string }> }
-  ) {
+) {
 	try {
-	  const { id } = await params;
-  
-	  if (!id) {
-		return NextResponse.json(
-		  { error: "Invalid request" },
-		  { status: 400 }
-		);
-	  }
-  
-	  const sessionUser = await getServerSession(authOptions);
-	  const user_id = sessionUser?.user?.id;
-	
-  
-	  if (!user_id) {
-		return NextResponse.json(
-		  { error: "Unauthorized" },
-		  { status: 401 }
-		);
-	  }
-  
-	  const debateSession = await prisma.debateSession.findUnique({
-		where: {
-		  id: id,
-		  userId: user_id,
-		},
-	  });
+		const { id } = await params;
+
+		if (!id) {
+			return NextResponse.json(
+				{ error: "Invalid request" },
+				{ status: 400 }
+			);
+		}
+
+		const sessionUser = await getServerSession(authOptions);
+		const user_id = sessionUser?.user?.id;
+
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
+		}
+
+		const debateSession = await prisma.debateSession.findUnique({
+			where: {
+				id: id,
+				userId: user_id,
+			},
+		});
 
 		if (!debateSession || debateSession.userId !== user_id) {
 			return NextResponse.json(
@@ -117,8 +114,6 @@ export async function POST(
 			);
 		}
 
-		console.log(history);
-
 		if (history.length === 0) {
 			return NextResponse.json(
 				{ error: "No valid conversation exchanges found" },
@@ -130,15 +125,13 @@ export async function POST(
 		const prompt = generateSuggestions(
 			history,
 			debateSession.theme,
-			debateSession.description,
-			
+			debateSession.description
 		);
 
 		const result = await modelDebateSuggestion.generateContent(prompt);
 		const responseText = result.response.text();
 
 		let parsedResponse;
-		console.log(responseText);
 
 		try {
 			let jsonText = responseText;
@@ -186,7 +179,6 @@ export async function POST(
 		}
 
 		// Ensure suggestions is an array with the expected length
-		console.log(suggestions.length, history.length);
 		if (suggestions.length !== history.length) {
 			return NextResponse.json(
 				{ error: "AI model response format mismatch" },
@@ -196,40 +188,43 @@ export async function POST(
 
 		// Insert each question, answer, and suggestion into the database
 		let totalMark = 0;
-    for (let i = 0; i < history.length; i++) {
-      await prisma.debateQuestion.create({
-        data: {
-          debateId: id,
-          question: history[i].question,
-          answer: history[i].answer || null, // Make nullable
-          suggestion: suggestions[i].suggestion || null, // Make nullable
-          reason: suggestions[i].reason || null, // Make nullable
-        },
-      });
+		for (let i = 0; i < history.length; i++) {
+			await prisma.debateQuestion.create({
+				data: {
+					debateId: id,
+					question: history[i].question,
+					answer: history[i].answer || null, // Make nullable
+					suggestion: suggestions[i].suggestion || null, // Make nullable
+					reason: suggestions[i].reason || null, // Make nullable
+				},
+			});
 
-      if (suggestions[i].mark) {
-        totalMark += parseFloat(suggestions[i].mark);
-      }
-    }
+			if (suggestions[i].mark) {
+				totalMark += parseFloat(suggestions[i].mark);
+			}
+		}
 
 		// Update the session with overall score and suggestions
 		await prisma.debateSession.update({
 			where: { id: id },
 			data: {
-			  score: totalMark > 0 ? Math.round(totalMark / history.length) : null,
-			  suggestions: overallSuggestion || null, // Make nullable and convert to String
+				score:
+					totalMark > 0
+						? Math.round(totalMark / history.length)
+						: null,
+				suggestions: overallSuggestion || null, // Make nullable and convert to String
 			},
-		  });
-	  
-		  return NextResponse.json({
+		});
+
+		return NextResponse.json({
 			success: true,
 			message: "Debate session saved successfully with suggestions",
-		  });
-		} catch (error) {
-		  console.error("Error in saving debate session:", error);
-		  return NextResponse.json(
+		});
+	} catch (error) {
+		console.error("Error in saving debate session:", error);
+		return NextResponse.json(
 			{ error: "Failed to save debate session" },
 			{ status: 500 }
-		  );
-		}
-	  }
+		);
+	}
+}

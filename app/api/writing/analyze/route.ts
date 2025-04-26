@@ -34,12 +34,12 @@ export async function POST(request: NextRequest) {
 		// Ensure required directories exist
 		await ensureDirectoriesExist();
 
-		const session = await getServerSession(authOptions);
-
-		if (!session || !session.user) {
-			return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-				status: 401,
-			});
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
 		}
 
 		const { filePath } = await request.json();
@@ -53,8 +53,6 @@ export async function POST(request: NextRequest) {
 
 		// Get absolute path to the file
 		const absolutePath = path.join(process.cwd(), "public", filePath);
-		console.log("Processing file at:", absolutePath);
-
 		// Check if file exists
 		try {
 			await fs.access(absolutePath);
@@ -97,7 +95,7 @@ export async function POST(request: NextRequest) {
 			const fileName = path.basename(filePath);
 			const writingResult = await prisma.essayAnalysis.create({
 				data: {
-					userId: session.user.id,
+					userId: user_id as string,
 					originalFilename: fileName,
 					overallSuggestion: parsedResult.overallSuggestion,
 					score: parsedResult.score,
@@ -114,7 +112,6 @@ export async function POST(request: NextRequest) {
 			// Clean up the temporary file
 			try {
 				await fs.unlink(absolutePath);
-				console.log("Successfully deleted file:", absolutePath);
 			} catch (unlinkErr) {
 				console.error("Error deleting file:", absolutePath, unlinkErr);
 				// Continue execution even if file deletion fails

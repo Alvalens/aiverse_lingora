@@ -7,18 +7,18 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET() {
 	try {
-		const session = await getServerSession(authOptions);
-
-		if (!session || !session.user) {
-			return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-				status: 401,
-			});
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
 		}
 
 		// Get all writing sessions for the user
 		const essayAnalysis = await prisma.essayAnalysis.findMany({
 			where: {
-				userId: session.user.id,
+				userId: user_id,
 			},
 			orderBy: {
 				createdAt: "desc",

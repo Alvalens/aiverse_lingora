@@ -3,13 +3,11 @@ import { modelDailyTalkSuggestion } from "@/lib/gemini";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { formatLanguage } from "@/lib/utils";
 
 function generateSuggestions(
 	history: { question: string; answer: string }[],
 	theme: string,
 	description: string,
-	language: string = "EN"
 ) {
 	if (history.length === 0) {
 		return "No conversation history provided.";
@@ -57,7 +55,7 @@ function generateSuggestions(
 		"overallSuggestion": "comprehensive summary of conversation performance"
 	}
 	
-	Respond in "${formatLanguage(language)}".
+	Respond in "EN".
 	
 	Conversation history: [${conversation}]`;
 }
@@ -76,9 +74,13 @@ export async function POST(
 			);
 		}
 
-		const sessionUser = await getServerSession(authOptions);
-		const user_id = sessionUser?.user?.id;
-		const user_language = sessionUser?.user?.language || "EN";
+		const user_id = (await getServerSession(authOptions))?.user?.id;
+		if (!user_id) {
+			return NextResponse.json(
+				{ error: "Unauthorized" },
+				{ status: 401 }
+			);
+		}
 
 		if (!user_id) {
 			return NextResponse.json(
@@ -116,8 +118,6 @@ export async function POST(
 			);
 		}
 
-		console.log(history);
-
 		if (history.length === 0) {
 			return NextResponse.json(
 				{ error: "No valid conversation exchanges found" },
@@ -130,15 +130,12 @@ export async function POST(
 			history,
 			dailyTalkSession.theme,
 			dailyTalkSession.description,
-			user_language
 		);
 
 		const result = await modelDailyTalkSuggestion.generateContent(prompt);
 		const responseText = result.response.text();
 
 		let parsedResponse;
-		console.log(responseText);
-
 		try {
 			let jsonText = responseText;
 			const jsonRegex = /```(?:json)?\s*([\s\S]*?)```/;
@@ -185,7 +182,6 @@ export async function POST(
 		}
 
 		// Ensure suggestions is an array with the expected length
-		console.log(suggestions.length, history.length);
 		if (suggestions.length !== history.length) {
 			return NextResponse.json(
 				{ error: "AI model response format mismatch" },
