@@ -9,11 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useSession, signOut } from "next-auth/react"
 
 export function UserProfile() {
-  // Static data
-  const userName = "Azarya Aditya"
-  const userEmail = "azaryamoeljono@gmail.com"
+  const { data: session } = useSession();
+
+  // Default values if not logged in
+  const userName = session?.user?.name || "Guest User";
+  const userEmail = session?.user?.email || "guest@email.com";
 
   return (
     <DropdownMenu>
@@ -60,7 +63,10 @@ export function UserProfile() {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => alert("Log out clicked")} className="text-destructive focus:text-destructive">
+        <DropdownMenuItem
+          onClick={() => signOut()}
+          className="text-destructive focus:text-destructive"
+        >
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

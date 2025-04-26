@@ -12,26 +12,42 @@ export async function GET() {
   }
 
   try {
-    // Average score for Daily Talk sessions
-    const dailyTalkAgg = await prisma.dailyTalkSession.aggregate({
+    // Fetch all Daily Talk session scores
+    const dailytalkSessions = await prisma.dailyTalkSession.findMany({
       where: { userId },
-      _avg: { score: true },
+      select: { score: true },
     });
-    const averageDailyTalkScore = dailyTalkAgg._avg?.score ?? null;
+    // Fetch all Storytelling session scores
+    const storytellingSessions = await prisma.storyTellingSession.findMany({
+      where: { userId },
+      select: { score: true },
+    });
+    // Fetch all Debate session scores
+    const debateSessions = await prisma.debateSession.findMany({
+      where: { userId },
+      select: { score: true },
+    });
 
-    // Average score for Storytelling sessions
-    const storytellingAgg = await prisma.storyTellingSession.aggregate({
-      where: { userId },
-      _avg: { score: true },
-    });
-    const averageStorytellingScore = storytellingAgg._avg?.score ?? null;
+    // Compute average for each session type
+    const dailyTalkScores = dailytalkSessions.map((s) => s.score ?? 0);
+    const averageDailyTalkScore =
+      dailyTalkScores.length > 0
+        ? dailyTalkScores.reduce((sum, v) => sum + v, 0) /
+          dailyTalkScores.length
+        : 0;
 
-    // Average score for Debate sessions
-    const debateAgg = await prisma.debateSession.aggregate({
-      where: { userId },
-      _avg: { score: true },
-    });
-    const averageDebateScore = debateAgg._avg?.score ?? null;
+    const storytellingScores = storytellingSessions.map((s) => s.score ?? 0);
+    const averageStorytellingScore =
+      storytellingScores.length > 0
+        ? storytellingScores.reduce((sum, v) => sum + v, 0) /
+          storytellingScores.length
+        : 0;
+
+    const debateScores = debateSessions.map((s) => s.score ?? 0);
+    const averageDebateScore =
+      debateScores.length > 0
+        ? debateScores.reduce((sum, v) => sum + v, 0) / debateScores.length
+        : 0;
 
     // Fetch referral code if any
     const referralCode = await prisma.referralCode.findUnique({
@@ -47,6 +63,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error("🔥 Error in dashboard API:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
