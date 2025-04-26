@@ -24,6 +24,10 @@ export default function ConversationPage() {
     router.push("/app/conversation/story-telling");
   };
 
+  const handleCreateInteractiveDebate = () => {
+    router.push("/app/conversation/interactive-debate");
+  };
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-primary">
       <div className="w-full max-w-lg p-6 bg-[#052038] rounded-lg shadow-lg text-white">
@@ -52,6 +56,22 @@ export default function ConversationPage() {
         <div className="flex justify-center">
           <Button
             onClick={handleCreateStoryTelling}
+            className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
+          >
+            Create New 
+          </Button>
+        </div>
+      </div>
+      <div className="w-full max-w-lg p-6 bg-[#052038] rounded-lg shadow-lg text-white mt-3">
+        <h1 className="text-2xl font-bold mb-6 text-center">Conversations</h1>
+
+        <p className="mb-8 text-center">
+          Interactive Debate
+        </p>
+
+        <div className="flex justify-center">
+          <Button
+            onClick={handleCreateInteractiveDebate}
             className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
           >
             Create New 
