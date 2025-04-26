@@ -53,8 +53,6 @@ export async function POST(request: NextRequest) {
 
 		// Get absolute path to the file
 		const absolutePath = path.join(process.cwd(), "public", filePath);
-		console.log("Processing file at:", absolutePath);
-
 		// Check if file exists
 		try {
 			await fs.access(absolutePath);
@@ -114,7 +112,6 @@ export async function POST(request: NextRequest) {
 			// Clean up the temporary file
 			try {
 				await fs.unlink(absolutePath);
-				console.log("Successfully deleted file:", absolutePath);
 			} catch (unlinkErr) {
 				console.error("Error deleting file:", absolutePath, unlinkErr);
 				// Continue execution even if file deletion fails

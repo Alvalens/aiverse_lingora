@@ -18,7 +18,7 @@ export async function POST() {
 
 		// Generate an image prompt for story telling
 		const imagePrompt =
-			"Create a realistic image that depicts a daily life scene. It should be suitable for language learning and storytelling practice. The scene should be clear, detailed, and engaging.";
+			"Generate a highly realistic image depicting a detailed scene from everyday life, designed specifically to be used in an IELTS-style image description speaking task. The image should capture beauty in the ordinary, featuring rich and nuanced details—such as setting, characters, objects, and activities—that naturally invite in-depth verbal description. Focus on authenticity, emotional resonance, and vivid textures, with realistic lighting and atmosphere. The scene should spark curiosity and encourage the viewer to imagine the story behind the moment, supporting fluent, coherent, and organized English storytelling during the task. The image must be suitable as a cover photo for a narrative article while being accessible for intermediate to advanced English learners.";
 
 		try {
 			// Generate image using the Gemini model

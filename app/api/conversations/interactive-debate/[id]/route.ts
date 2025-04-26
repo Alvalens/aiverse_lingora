@@ -62,17 +62,6 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
 			debateSession.duration
 		);
 
-		const remainingTime = Math.max(
-			0,
-			Math.floor(
-				(debateSession.startedAt.getTime() +
-					debateSession.duration * 60 * 1000 -
-					Date.now()) /
-					1000
-			)
-		);
-
-		console.log("remainingTime", remainingTime);
 
 		if (ended) {
 			await prisma.debateSession.update({

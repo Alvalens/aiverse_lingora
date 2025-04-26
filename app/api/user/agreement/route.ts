@@ -37,9 +37,7 @@ export async function POST(req: NextRequest) {
         agreement: true,
       }
     });
-    
-    console.log(`Updated agreement for ${session.user.email} to ${updatedUser.agreement}`);
-
+  
     // Add refreshSession flag to trigger session refresh on the client side
     return NextResponse.json(
       { 

@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
       select: { id: true, name: true, agreement: true }
     });
     
-    console.log(`Updated agreement status for user ${updatedUser.id} to ${updatedUser.agreement}`);
     return NextResponse.json({
       success: true,
       user: updatedUser

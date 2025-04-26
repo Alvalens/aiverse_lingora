@@ -209,8 +209,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
           parts: [{ text: userInput }]
         }
       ];
-      console.log('User input:', userInput);
-
       setUserInput('');
       setLoading(true);
       setCurrentQuestion('Thinking...');
@@ -357,8 +355,6 @@ export default function Page({ params }: { params: Promise<{ id: string }> }) {
         console.error("End session error:", errorText);
         throw new Error("Failed to mark session as ended.");
       }
-
-      console.log("Session successfully marked as ended.");
 
       // Format the history for saving
       const formattedHistory = history
