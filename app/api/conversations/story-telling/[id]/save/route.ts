@@ -24,7 +24,7 @@ const buildPrompt = (description: string, imagePath: string) => {
 
 export async function POST(
 	request: Request,
-	{ params }: { params: { id: string } }
+	{ params }: { params: Promise<{ id: string }>}
 ) {
 	try {
 		const session = await getServerSession(authOptions);
@@ -37,7 +37,7 @@ export async function POST(
 			);
 		}
 
-		const sessionId = params.id;
+		const { id: sessionId } = await params;
 		const { description } = await request.json();
 
 		if (!description) {
