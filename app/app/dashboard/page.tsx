@@ -41,7 +41,6 @@ export default function DashboardPage() {
         }
         const json = (await res.json()) as Partial<DashboardData>;
 
-        // Validasi data
         if (
           (typeof json.averageDailyTalkScore !== "number" && json.averageDailyTalkScore !== null) ||
           (typeof json.averageStorytellingScore !== "number" && json.averageStorytellingScore !== null) ||

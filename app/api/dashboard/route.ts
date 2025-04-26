@@ -49,7 +49,6 @@ export async function GET() {
         ? debateScores.reduce((sum, v) => sum + v, 0) / debateScores.length
         : 0;
 
-    // Fetch referral code if any
     const referralCode = await prisma.referralCode.findUnique({
       where: { userId },
       select: { code: true, link: true },

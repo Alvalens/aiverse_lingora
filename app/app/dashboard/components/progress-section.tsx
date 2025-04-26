@@ -3,23 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const progressItems = [
-  {
-    label: "Daily Talk",
-    value: 75,
-    level: "High" as const,
-  },
-  {
-    label: "Retell & Describe",
-    value: 45,
-    level: "Low" as const,
-  },
-  {
-    label: "Interactive Debate",
-    value: 15,
-    level: "Very Low" as const,
-  },
-];
+interface ProgressSectionProps {
+  averageDailyTalkScore: number | null;
+  averageStorytellingScore: number | null;
+  averageDebateScore: number | null;
+}
 
 const getSolidColorClass = (value: number) => {
   if (value >= 66) {
@@ -31,7 +19,35 @@ const getSolidColorClass = (value: number) => {
   }
 };
 
-export function ProgressSection() {
+const getLevel = (value: number) => {
+  if (value >= 66) return "High";
+  if (value >= 33) return "Low";
+  return "Very Low";
+};
+
+export function ProgressSection({
+  averageDailyTalkScore,
+  averageStorytellingScore,
+  averageDebateScore,
+}: ProgressSectionProps) {
+  const progressItems = [
+    {
+      label: "Daily Talk",
+      value: averageDailyTalkScore ?? 0,
+      level: getLevel(averageDailyTalkScore ?? 0),
+    },
+    {
+      label: "Retell & Describe",
+      value: averageStorytellingScore ?? 0,
+      level: getLevel(averageStorytellingScore ?? 0),
+    },
+    {
+      label: "Interactive Debate",
+      value: averageDebateScore ?? 0,
+      level: getLevel(averageDebateScore ?? 0),
+    },
+  ];
+
   return (
     <Card className="border-[hsl(var(--border))] bg-[hsl(var(--tertiary))] rounded-lg shadow-md h-[400px]">
       <CardHeader className="pb-1 pt-3 border-b border-[hsl(var(--border))]">

@@ -6,13 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-const STATIC_DATA = {
-  referralCode: "AZARYA094",
-};
+interface ReferralCardProps {
+  referralCode?: { code: string; link: string } | null;
+}
 
-export function ReferralCard() {
+export function ReferralCard({ referralCode }: ReferralCardProps) {
+  const code = referralCode?.code || "";
+  const link = referralCode?.link || "";
+
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(STATIC_DATA.referralCode);
+    navigator.clipboard.writeText(code);
   };
 
   return (
@@ -25,7 +28,7 @@ export function ReferralCard() {
         <div className="flex flex-col sm:flex-row items-center gap-2">
           <div className="relative w-full sm:max-w-[250px]">
             <Input
-              value={STATIC_DATA.referralCode}
+              value={code}
               readOnly
               tabIndex={-1}
               className="border-quaternary bg-[#E2E8F0] text-color-text h-9 text-base pr-10"
@@ -60,9 +63,16 @@ export function ReferralCard() {
           </Button>
         </div>
 
-        <Button className="w-full h-9 text-base bg-gradient-to-br from-quaternary to-tertiary text-white rounded-lg">
-          More Info
-        </Button>
+        {link && (
+          <Button
+            asChild
+            className="w-full h-9 text-base bg-gradient-to-br from-quaternary to-tertiary text-white rounded-lg"
+          >
+            <a href={link} target="_blank" rel="noopener noreferrer">
+              More Info
+            </a>
+          </Button>
+        )}
       </CardContent>
     </Card>
   );
