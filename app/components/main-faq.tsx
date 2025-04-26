@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { Tokens } from "@/lib/constant";
+import { Tokens } from "@/lib/constants";
 
 const MainFaq = () => {
   const faqs = [
@@ -21,11 +21,11 @@ const MainFaq = () => {
     },
     {
       question: "How many tokens do I need for an interview session?",
-      answer: `Each AI Interview Session costs ${Tokens.Interview} tokens per practice run.`,
+      answer: `Each AI Interview Session costs ${Tokens.convDaily} tokens per practice run.`,
     },
     {
       question: "How many tokens for CV optimization and analysis?",
-      answer: `CV Optimization requires ${Tokens.CVOptimize} tokens, while CV Analysis costs ${Tokens.CVAnalysis} tokens per use.`,
+      answer: `CV Optimization requires ${Tokens.convDaily} tokens, while CV Analysis costs ${Tokens.convDaily} tokens per use.`,
     },
     {
       question: "Are there any free tokens for new users?",
