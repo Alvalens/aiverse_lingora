@@ -223,8 +223,8 @@ model dailyTalkSession {
   userId      String
   theme       String
   description String    @db.Text
-  suggestions Json?
-  duration    Int?       @default(5)
+  suggestions String?   @db.Text
+  duration    Int       @default(5)
   startedAt   DateTime  @default(now())
   endedAt     DateTime?
   score       Int?
