@@ -30,7 +30,7 @@ export default function CreateConversationPage() {
   const generateThemes = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch("/api/conversations/theme", {
+      const response = await fetch("/api/conversations/daily-talk/theme", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export default function CreateConversationPage() {
     setIsLoading(true);
     try {
       console.log("Creating conversation with theme:", selectedTheme.theme);
-      const response = await fetch("/api/conversations", {
+      const response = await fetch("/api/conversations/daily-talk", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

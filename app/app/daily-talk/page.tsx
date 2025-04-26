@@ -17,7 +17,7 @@ export default function ConversationPage() {
   }
 
   const handleCreateConversation = () => {
-    router.push("/app/conversation/create");
+    router.push("/app/daily-talk/create");
   };
 
   return (

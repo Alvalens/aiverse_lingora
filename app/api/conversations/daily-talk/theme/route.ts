@@ -49,7 +49,7 @@ try {
         }
     );
 } catch (error) {
-        console.error("Error in POST /api/conversations/theme", error);
+        console.error("Error in POST /api/conversations/daily-talk/theme", error);
         return NextResponse.json(
             { error: "Internal Server Error" },
             { status: 500 }
