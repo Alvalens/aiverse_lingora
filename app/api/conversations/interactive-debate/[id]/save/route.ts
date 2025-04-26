@@ -3,13 +3,13 @@ import { modelDebateSuggestion } from "@/lib/gemini";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { formatLanguage } from "@/lib/utils";
+
 
 function generateSuggestions(
 	history: { question: string; answer: string }[],
 	theme: string,
 	description: string,
-	language: string = "EN"
+	
 ) {
 	if (history.length === 0) {
 		return "No conversation history provided.";
@@ -58,7 +58,7 @@ Your response should be structured as:
   "overallSuggestion": "comprehensive summary of debate performance"
 }
 
-Respond in "${formatLanguage(language)}".
+
 
 Debate history: [${conversation}]`;
 }
@@ -66,34 +66,34 @@ Debate history: [${conversation}]`;
 export async function POST(
 	req: Request,
 	{ params }: { params: Promise<{ id: string }> }
-) {
+  ) {
 	try {
-		const { id } = await (params);
-
-		if (!id) {
-			return NextResponse.json(
-				{ error: "Invalid request" },
-				{ status: 400 }
-			);
-		}
-
-		const sessionUser = await getServerSession(authOptions);
-		const user_id = sessionUser?.user?.id;
-		const user_language = sessionUser?.user?.language || "EN";
-
-		if (!user_id) {
-			return NextResponse.json(
-				{ error: "Unauthorized" },
-				{ status: 401 }
-			);
-		}
-
-		const debateSession = await prisma.debateSession.findUnique({
-			where: {
-				id: id,
-				userId: user_id,
-			},
-		});
+	  const { id } = await params;
+  
+	  if (!id) {
+		return NextResponse.json(
+		  { error: "Invalid request" },
+		  { status: 400 }
+		);
+	  }
+  
+	  const sessionUser = await getServerSession(authOptions);
+	  const user_id = sessionUser?.user?.id;
+	
+  
+	  if (!user_id) {
+		return NextResponse.json(
+		  { error: "Unauthorized" },
+		  { status: 401 }
+		);
+	  }
+  
+	  const debateSession = await prisma.debateSession.findUnique({
+		where: {
+		  id: id,
+		  userId: user_id,
+		},
+	  });
 
 		if (!debateSession || debateSession.userId !== user_id) {
 			return NextResponse.json(
@@ -131,7 +131,7 @@ export async function POST(
 			history,
 			debateSession.theme,
 			debateSession.description,
-			user_language
+			
 		);
 
 		const result = await modelDebateSuggestion.generateContent(prompt);
@@ -196,40 +196,40 @@ export async function POST(
 
 		// Insert each question, answer, and suggestion into the database
 		let totalMark = 0;
-		for (let i = 0; i < history.length; i++) {
-			await prisma.debateQuestion.create({
-				data: {
-					debateId: id,
-					question: history[i].question,
-					answer: history[i].answer,
-					suggestion: suggestions[i].suggestion,
-					reason: suggestions[i].reason,
-				},
-			});
+    for (let i = 0; i < history.length; i++) {
+      await prisma.debateQuestion.create({
+        data: {
+          debateId: id,
+          question: history[i].question,
+          answer: history[i].answer || null, // Make nullable
+          suggestion: suggestions[i].suggestion || null, // Make nullable
+          reason: suggestions[i].reason || null, // Make nullable
+        },
+      });
 
-			if (suggestions[i].mark) {
-				totalMark += parseFloat(suggestions[i].mark);
-			}
-		}
+      if (suggestions[i].mark) {
+        totalMark += parseFloat(suggestions[i].mark);
+      }
+    }
 
 		// Update the session with overall score and suggestions
 		await prisma.debateSession.update({
 			where: { id: id },
 			data: {
-				score: Math.round(totalMark / history.length),
-				suggestions: overallSuggestion,
+			  score: totalMark > 0 ? Math.round(totalMark / history.length) : null,
+			  suggestions: overallSuggestion || null, // Make nullable and convert to String
 			},
-		});
-
-		return NextResponse.json({
+		  });
+	  
+		  return NextResponse.json({
 			success: true,
-			message: "Debatesession saved successfully with suggestions",
-		});
-	} catch (error) {
-		console.error("Error in saving debate session:", error);
-		return NextResponse.json(
-			{ error: "Failed to save debatesession" },
+			message: "Debate session saved successfully with suggestions",
+		  });
+		} catch (error) {
+		  console.error("Error in saving debate session:", error);
+		  return NextResponse.json(
+			{ error: "Failed to save debate session" },
 			{ status: 500 }
-		);
-	}
-}
+		  );
+		}
+	  }
