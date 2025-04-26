@@ -83,7 +83,7 @@ export default function CreateConversationPage() {
 
       const data = await response.json();
       toast.success("Conversation created successfully");
-      router.push(`/app/conversation/${data.id}`);
+      router.push(`/app/daily-talk/${data.id}`);
     } catch (error) {
       console.error("Error creating conversation:", error);
       toast.error("Failed to create conversation. Please try again.");

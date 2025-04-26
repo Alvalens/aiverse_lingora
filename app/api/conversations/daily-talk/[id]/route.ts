@@ -6,9 +6,23 @@ import { isSessionEnded } from "@/lib/utils";
 import { modelConversation } from "@/lib/gemini";
 
 function buildPrompt(title: string, description: string) {
-return `You are an expert english teacher. Generate a conversation between two people based on the theme and description provided. The conversation should be engaging and interesting, and it should be suitable for a daily conversation. The theme is "${title}" and the description of the theme is "${description}".`;
+	return `
+  You are a professional English conversation partner helping users practice speaking naturally.
+  Simulate a daily conversation based on the provided theme and description.
+  **Respond with only one dialogue turn at a time**, engaging the user directly without summarizing or scripting future turns.
+  
+  The theme is: "${title}"  
+  The description is: "${description}"
+  
+  Each response should be:
+  - Short (1-3 sentences)
+  - Engaging and natural
+  - Plain text only (no formatting, no labels, no stage directions)
+  
+  Focus on asking or responding naturally, just as a real conversation would unfold.
+  `;
 }
-
+  
 export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
 		const { id: dailyTalkId } = await params;

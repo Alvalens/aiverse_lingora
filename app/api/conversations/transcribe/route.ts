@@ -8,7 +8,7 @@ const buildPrompt = () => {
 	return `You are an expert audio transcriber. convert the audio to text. The audio is in English. The transcription should be accurate and clear. Don't correct any grammatical errors. The transcription should be in raw english without any additional changes or corrections.`;
 };
 
-export async function POST(    request: Request) {
+export async function POST(request: Request) {
 	try {
 		const user_id = (await getServerSession(authOptions))?.user?.id;
 		if (!user_id) {
@@ -63,12 +63,10 @@ export async function POST(    request: Request) {
         const response = await result.response;
 		const text = response.text();
 
-		const feedbackData = JSON.parse(text);
-
 		// return to frontend
 		return NextResponse.json(
 			{
-				themes: feedbackData,
+				themes: text,
 			},
 			{
 				status: 200,
