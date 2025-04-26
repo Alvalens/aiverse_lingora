@@ -123,7 +123,9 @@
 
 @theme {
   --color-primary: #FFFFFF;
-  --color-secondary: #F8FAFC;
+  --color-secondary: #F8FFFF;
   --color-tertiary: #00D4DA;
   --color-quaternary: #0A3558;
+  --color-color-border-secondary: #E2E8F0;
+  --color-color-text: #303030;
 }

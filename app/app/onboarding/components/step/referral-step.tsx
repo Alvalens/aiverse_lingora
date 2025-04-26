@@ -55,7 +55,7 @@ export default function ReferralStep({
   }
 
   return (
-    <div className="max-w-xl mx-auto text-white">
+    <div className="max-w-xl mx-auto text-color-text">
       <h2 className="text-2xl font-bold mb-6 text-center">Referral Code (Optional)</h2>
       <p className="mb-6 text-center text-base">
         If you have a referral code, please enter it below. You may also skip this step.
@@ -70,12 +70,12 @@ export default function ReferralStep({
             value={referralInput}
             onChange={(e) => setReferralInput(e.target.value.toUpperCase())}
             placeholder="Enter referral code"
-            className="w-full p-2 border rounded font-mono bg-primary text-white text-base"
+            className="w-full p-2 border rounded font-mono bg-primary text-color-text text-base"
           />
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-primary text-white py-2 px-4 rounded-lg hover:bg-secondary hover:text-black transition-colors"
+            className="bg-primary text-color-text py-2 px-4 border border-tertiary rounded-lg hover:bg-tertiary hover:text-white transition-colors"
           >
             {isSubmitting ? "Applying..." : "Apply"}
           </button>
@@ -84,7 +84,7 @@ export default function ReferralStep({
           <button
             type="button"
             onClick={onSkip}
-            className="absolute left-0 text-white underline"
+            className="absolute left-0 text-color-text underline"
             disabled={isSubmitting}
           >
             Skip

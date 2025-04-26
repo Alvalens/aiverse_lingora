@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono,Quicksand } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProviders";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import Script from "next/script";
 import "./globals.css";
-import ReactQueryProvider from "@/providers/ReactQueryProvider";
+
+// import ogImage from "@/public/og-image.jpg";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,13 +18,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const quickSand = Quicksand({
+  variable: "--font-quick-sand",
+  subsets: ["latin"],
+});
+
+
 export const metadata: Metadata = {
   title: {
-    default: "Intervyou | Platform Wawancara & Analisis CV",
+    default: "Lingora | English Practice Platform",
     template: "%s | Intervyou",
-    absolute: "Intervyou | Platform Wawancara & Analisis CV",
+    absolute: "Lingora | English Practice Platform",
   },
-  applicationName: "Intervyou",
+  applicationName: "Lingora",
   description:
     "Platform pelatihan wawancara kerja dan optimasi CV. Dapatkan saran, evaluasi, dan pelatihan untuk mengembangkan karir.",
   keywords: [
@@ -45,11 +53,11 @@ export const metadata: Metadata = {
     },
   ],
   openGraph: {
-    title: "Intervyou | Platform Pelatihan Wawancara AI",
+    title: "Lingora | Platform Pelatihan Wawancara AI",
     description:
       "Platform inovatif untuk membantu profesional mempersiapkan wawancara kerja dan meningkatkan CV mereka.",
     url: "https://www.intervyou.me",
-    siteName: "Intervyou",
+    siteName: "Lingora",
     // images: [
     //   {
     //     url: ogImage.src,
@@ -91,10 +99,12 @@ export default function RootLayout({
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
       ></Script>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        className={`${geistSans.variable} ${geistMono.variable} ${quickSand.variable}  antialiased bg-primary`}
+      >
         <main>
+          <Toaster />
           <ReactQueryProvider>
-          {children}
+            <NextAuthProvider>{children}</NextAuthProvider>
           </ReactQueryProvider>
         </main>
       </body>
