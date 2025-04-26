@@ -111,14 +111,14 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
               }`}
             >
               <div className="flex items-center justify-center w-12 h-12">
-                <Image src="/images/dashboard/conversation.svg" alt="Conversation" width={40} height={40} />
+                <Image src="/images/dashboard/daily-talk.svg" alt="Conversation" width={40} height={40} />
               </div>
               <span
                 className={`text-base font-medium transition-all duration-300 ${
                   isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                Conversation
+                Daily Talk
               </span>
             </Link>
 
@@ -130,14 +130,14 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
               }`}
             >
               <div className="flex items-center justify-center w-12 h-12">
-                <Image src="/images/dashboard/writing.svg" alt="Writing" width={40} height={40} />
+                <Image src="/images/dashboard/retell-describe.svg" alt="Writing" width={40} height={40} />
               </div>
               <span
                 className={`text-base font-medium transition-all duration-300 ${
                   isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                Writing
+                Retell & Describe
               </span>
             </Link>
 
@@ -149,14 +149,14 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
               }`}
             >
               <div className="flex items-center justify-center w-12 h-12">
-                <Image src="/images/dashboard/vocabulary.svg" alt="Vocabulary" width={40} height={40} />
+                <Image src="/images/dashboard/interactive-debate.svg" alt="Vocabulary" width={40} height={40} />
               </div>
               <span
                 className={`text-base font-medium transition-all duration-300 ${
                   isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
                 }`}
               >
-                Vocabulary
+                Interactive Debate
               </span>
             </Link>
           </div>

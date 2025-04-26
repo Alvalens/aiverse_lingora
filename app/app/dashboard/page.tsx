@@ -1,17 +1,47 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { TotalTokens } from "./components/total-tokens";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ReferralCard } from "./components/referral-card";
-import { ReferralMilestones } from "./components/referral-milestones"
+import { ReferralMilestones } from "./components/referral-milestones";
 import { ProgressSection } from "./components/progress-section";
 import { TotalPractices } from "./components/total-practices";
 import { OfferCard } from "./components/offer-card";
 
 export default function DashboardPage() {
-  // Static data
+  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const res = await fetch("/api/dashboard");
+        if (!res.ok) throw new Error("Failed to fetch dashboard data");
+        const data = await res.json();
+        setDashboardData(data);
+      } catch {
+        setDashboardData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDashboard();
+  }, []);
+
+  if (loading) {
+    return <div className="text-white">Loading...</div>;
+  }
+
+  if (!dashboardData) {
+    return <div className="text-red-500">Failed to load dashboard data.</div>;
+  }
+
+  // Contoh penggunaan data dari API
+  // const { averageDailyTalkScore, averageStorytellingScore, averageDebateScore, referralCode } = dashboardData;
+
   const userName = "Guest User";
-  const tokens = 125;
+  const tokens = 125; // Ganti dengan data dari API jika tersedia
 
   return (
     <div className="h-full space-y-8 text-white pt-4">
@@ -34,13 +64,17 @@ export default function DashboardPage() {
 
       <div className="grid gap-8 md:grid-cols-3">
         <TotalTokens tokens={tokens} />
-        <ReferralCard />
+        <ReferralCard referralCode={dashboardData.referralCode} />
         <ReferralMilestones />
       </div>
 
       <div className="grid gap-8 md:grid-cols-2">
         <div className="flex flex-col gap-8">
-          <ProgressSection />
+          <ProgressSection
+            averageDailyTalkScore={dashboardData.averageDailyTalkScore}
+            averageStorytellingScore={dashboardData.averageStorytellingScore}
+            averageDebateScore={dashboardData.averageDebateScore}
+          />
         </div>
 
         <div className="flex flex-col gap-8">

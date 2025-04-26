@@ -1,10 +1,10 @@
-/* eslint-disable @next/next/no-img-element */
 "use client"
 
 import { useQuery } from "@tanstack/react-query"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 import { Toaster, toast } from "react-hot-toast"
 import { useState } from "react"
+import Image from "next/image"
 import type { TokenPack } from "@prisma/client"
 
 declare global {
@@ -95,9 +95,13 @@ const getTitleColor = (packId: number) => {
     case 3:
       return "text-red-400"
     default:
-      return "text-white"
+      return "text-color-text"
   }
 }
+
+// Ganti dengan link SVG baru (pastikan file SVG ini benar-benar ada di storage Anda)
+const SVG_BG_HOVER = "https://files.aiverse.id/assets/shop-hover.svg"
+const SVG_BG_TRANSPARENT = "https://files.aiverse.id/assets/shop-transparent.svg"
 
 export default function ShopPage() {
   const { data, error, isLoading } = useQuery({
@@ -108,8 +112,8 @@ export default function ShopPage() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
   const [expandedFeatures, setExpandedFeatures] = useState<Record<number, boolean>>({})
 
-  if (isLoading) return <div className="flex justify-center items-center h-screen">Loading token packs...</div>
-  if (error) return <div className="flex justify-center items-center h-screen">Error loading token packs.</div>
+  if (isLoading) return <div className="flex justify-center items-center h-screen text-color-text">Loading token packs...</div>
+  if (error) return <div className="flex justify-center items-center h-screen text-color-text">Error loading token packs.</div>
 
   const tokenPacks: TokenPack[] = data.tokenPacks
 
@@ -119,13 +123,6 @@ export default function ShopPage() {
       "Access to all AI models",
       "No expiration date",
       "Priority support",
-      "Task delivered one-by-one",
-      "Email support",
-      "Community access",
-      "Basic analytics",
-      "Up to 3 team members",
-      "Custom integrations",
-      "API access",
     ]
     return {
       ...pack,
@@ -219,13 +216,13 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#001427] text-white py-8 px-2">
+    <div className="min-h-screen bg-primary text-color-text py-8 px-2">
       <Toaster position="top-center" />
       <div className="max-w-7xl mx-auto w-full">
         {/* Header Section */}
         <div className="mb-12">
-          <h1 className="text-3xl font-bold">Available Token Packs</h1>
-          <p className="text-white/80 mt-4 text-lg">
+          <h1 className="text-3xl font-bold text-color-text">Available Token Packs</h1>
+          <p className="mt-4 text-lg text-color-text">
             Explore our plans and choose the best one for your needs. Each plan is tailored to help you achieve your
             goals efficiently.
           </p>
@@ -257,16 +254,20 @@ export default function ShopPage() {
               >
                 {/* SVG Background */}
                 <div className="absolute inset-0 w-full h-full">
-                  <img
+                  <Image
                     src={
                       hoveredCard === pack.id || pack.popular
-                        ? "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/shop-hover-e01klToHDU5ALy459iLqYlc5qdvKr1.svg" // shop-hover.svg
-                        : "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/shop-transparant-A2yHVpZiARPSeZO6ZqwedbfZYfgOLs.svg" // shop-transparant.svg
+                        ? SVG_BG_HOVER
+                        : SVG_BG_TRANSPARENT
                     }
                     alt=""
-                    className="w-full h-full object-cover"
-                    aria-hidden="true"
+                    fill
+                    className="object-cover"
+                    priority
+                    draggable={false}
                   />
+                  {/* Blur Overlay abu-abu */}
+                  <div className="absolute inset-0 w-full h-full bg-gray-200 opacity-60 backdrop-blur-[4px] pointer-events-none"></div>
                 </div>
 
                 {/* Card Content */}
@@ -276,18 +277,18 @@ export default function ShopPage() {
                     <div className="mb-4">
                       <div className="w-12 h-12 md:w-14 md:h-14 lg:w-16 lg:h-16">{getCrownIcon(pack.id)}</div>
                     </div>
-                    <h3 className={`text-xl md:text-2xl font-bold mb-2 ${getTitleColor(pack.id)}`}>{pack.name}</h3>
-                    <p className="text-gray-300 mb-2 text-base md:text-lg">
+                    <h3 className={`text-xl md:text-2xl font-bold mb-2 ${getTitleColor(pack.id)} text-color-text`}>{pack.name}</h3>
+                    <p className="text-color-text mb-2 text-base md:text-lg">
                       {pack.description || "For large teams & corporations"}
                     </p>
                     <div className="mb-2">
-                      <span className="text-2xl md:text-3xl font-bold">
+                      <span className="text-2xl md:text-3xl font-bold text-color-text">
                         {pack.price === 0 ? "Free" : `IDR ${pack.price.toLocaleString()}`}
                       </span>
                       {pack.price > 0 && <span className="text-gray-400 text-base md:text-lg ml-2">/Per Month</span>}
                     </div>
                     <div className="mb-2">
-                      <span className="text-base md:text-lg text-gray-300 font-semibold">
+                      <span className="text-base md:text-lg text-color-text font-semibold">
                         Tokens: {pack.tokens.toLocaleString()}
                       </span>
                     </div>
@@ -295,22 +296,22 @@ export default function ShopPage() {
                   <div className="border-b border-gray-600 my-3"></div>
                   {/* Features */}
                   <div className="flex flex-col flex-grow min-h-[220px]">
-                    <h4 className="text-lg md:text-xl font-semibold mb-2 text-start">Features</h4>
+                    <h4 className="text-lg md:text-xl font-semibold mb-2 text-start text-color-text">Features</h4>
                     <ul className="space-y-2 relative">
                       {pack.features?.slice(0, expandedFeatures[pack.id] ? undefined : 4).map((feature, index) => (
                         <li key={index} className="flex items-start">
-                          <Check className="h-5 w-5 text-teal-400 mr-2 flex-shrink-0 mt-1" />
-                          <span className="text-base md:text-lg text-gray-200">{feature}</span>
+                          <Check className="h-5 w-5 text-tertiary mr-2 flex-shrink-0 mt-1" />
+                          <span className="text-base md:text-lg text-color-text">{feature}</span>
                         </li>
                       ))}
                       {!expandedFeatures[pack.id] && pack.features.length > 4 && (
-                        <li className="absolute left-0 right-0 bottom-0 h-8 pointer-events-none bg-gradient-to-t from-[#001427] via-[#001427]/80 to-transparent rounded-b-2xl"></li>
+                        <li className="absolute left-0 right-0 bottom-0 h-8 pointer-events-none bg-gray-200 opacity-100 backdrop-blur-[35px] rounded-b-2xl"></li>
                       )}
                     </ul>
                     {pack.features.length > 4 && (
                       <button
                         onClick={() => toggleFeatures(pack.id)}
-                        className="mt-2 flex items-center text-gray-400 hover:text-white transition-colors mx-auto text-sm z-10 relative"
+                        className="mt-2 flex items-center text-color-text transition-colors mx-auto text-sm z-10 relative"
                       >
                         {expandedFeatures[pack.id] ? (
                           <>
@@ -330,19 +331,12 @@ export default function ShopPage() {
                   <div className="mt-auto pt-6 flex justify-center">
                     <button
                       onClick={() => handleBuy(pack.id)}
-                      className={`w-full py-3 rounded-xl font-bold text-lg transition-colors duration-300 border-2 border-teal-500
-                        ${
-                          pack.popular
-                            ? "bg-teal-500 text-black"
-                            : "bg-transparent text-white hover:bg-teal-500 hover:text-black"
-                        }
-                        hover:border-teal-500
-                      `}
+                      className="w-full py-3 rounded-xl font-bold text-lg transition-colors duration-300 border-2 border-teal-500 bg-gradient-to-br from-quaternary to-tertiary text-white hover:opacity-90"
                     >
                       {pack.price === 0 ? "Get Started" : "Buy Now"}
                     </button>
                   </div>
-                  <p className="text-center text-teal-400 mt-3 font-medium text-sm md:text-base">Limited Offer</p>
+                  <p className="text-center text-color-text mt-3 font-medium text-sm md:text-base">Limited Offer</p>
                 </div>
               </div>
             </div>

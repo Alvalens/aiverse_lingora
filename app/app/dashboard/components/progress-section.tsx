@@ -5,17 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const progressItems = [
   {
-    label: "Conversation",
+    label: "Daily Talk",
     value: 75,
     level: "High" as const,
   },
   {
-    label: "Writing",
+    label: "Retell & Describe",
     value: 45,
     level: "Low" as const,
   },
   {
-    label: "Vocabulary",
+    label: "Interactive Debate",
     value: 15,
     level: "Very Low" as const,
   },

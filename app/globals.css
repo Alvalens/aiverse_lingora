@@ -148,3 +148,8 @@
     @apply w-full;
   }
 }
+
+.sidebar-menu-button:hover {
+  background-color: #E7EBEE !important;
+  color: var(--color-text) !important;
+}

@@ -12,41 +12,37 @@ export async function GET() {
   }
 
   try {
-    const interviewSessions = await prisma.interviewSession.findMany({
+    // Average score for Daily Talk sessions
+    const dailyTalkAgg = await prisma.dailyTalkSession.aggregate({
       where: { userId },
-      select: { overallMark: true },
+      _avg: { score: true },
     });
+    const averageDailyTalkScore = dailyTalkAgg._avg?.score ?? null;
 
-    const cvAnalyses = await prisma.cVAnalysis.findMany({
+    // Average score for Storytelling sessions
+    const storytellingAgg = await prisma.storyTellingSession.aggregate({
       where: { userId },
-      select: { matchingScore: true },
+      _avg: { score: true },
     });
+    const averageStorytellingScore = storytellingAgg._avg?.score ?? null;
 
+    // Average score for Debate sessions
+    const debateAgg = await prisma.debateSession.aggregate({
+      where: { userId },
+      _avg: { score: true },
+    });
+    const averageDebateScore = debateAgg._avg?.score ?? null;
+
+    // Fetch referral code if any
     const referralCode = await prisma.referralCode.findUnique({
       where: { userId },
       select: { code: true, link: true },
     });
 
-    const overallMarks = interviewSessions.map(item => item.overallMark ?? 0);
-    const matchingScores = cvAnalyses.map(item => item.matchingScore ?? 0);
-
-    const averageOverallMark =
-      overallMarks.length > 0
-        ? overallMarks.reduce((sum, val) => sum + val, 0) / overallMarks.length
-        : 0;
-
-    const averageMatchingScore =
-      matchingScores.length > 0
-        ? matchingScores.reduce((sum, val) => sum + val, 0) / matchingScores.length
-        : 0;
-
-    const combinedAverageScore =
-      (averageOverallMark + averageMatchingScore) / 2;
-
     return NextResponse.json({
-      averageOverallMark,
-      averageMatchingScore,
-      combinedAverageScore,
+      averageDailyTalkScore,
+      averageStorytellingScore,
+      averageDebateScore,
       referralCode: referralCode ?? null,
     });
   } catch (error) {
