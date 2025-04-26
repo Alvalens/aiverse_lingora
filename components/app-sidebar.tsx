@@ -101,7 +101,7 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
 
           {/* Menu Section */}
           <div className="px-2">
-            {isOpen && <p className="mb-2 px-2 text-xs font-semibold uppercase text-color-text animate-fadeIn">Menu</p>}
+            {isOpen && <p className="mb-2 px-2 text-lg font-semibold text-color-text animate-fadeIn">Conversation</p>}
 
             {/* Conversation */}
             <Link
@@ -124,9 +124,9 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
 
             {/* Writing */}
             <Link
-              href="/app/writing"
+              href="/app/conversation/story-telling"
               className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
-                isActive("/app/writing") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+                isActive("/app/conversation/story-telling") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
               }`}
             >
               <div className="flex items-center justify-center w-12 h-12">
@@ -143,9 +143,9 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
 
             {/* Vocabulary */}
             <Link
-              href="/app/vocabulary"
+              href="/app/conversation/interactive-debate"
               className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
-                isActive("/app/vocabulary") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+                isActive("/app/conversation/interactive-debate") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
               }`}
             >
               <div className="flex items-center justify-center w-12 h-12">
@@ -160,6 +160,32 @@ export function AppSidebar({ defaultOpen = true, onOpenChange }: AppSidebarProps
               </span>
             </Link>
           </div>
+
+          {isOpen && <div className="my-4 border-t border-color-border-secondary mx-2 animate-fadeIn" />}
+
+          {/* Menu Section */}
+          <div className="px-2">
+            {isOpen && <p className="mb-2 px-2 text-lg font-semibold text-color-text animate-fadeIn">Writing</p>}
+
+            {/* Conversation */}
+            <Link
+              href="/app/writing"
+              className={`flex items-center rounded-xl p-3 mb-2 transition-all duration-200 ${
+                isActive("/app/essay-analysis") ? "bg-[#E7EBEE] text-color-text" : "text-color-text hover:bg-[#E7EBEE]"
+              }`}
+            >
+              <div className="flex items-center justify-center w-12 h-12">
+                <Image src="/images/dashboard/essay-analysis.svg" alt="Conversation" width={40} height={40} />
+              </div>
+              <span
+                className={`text-base font-medium transition-all duration-300 ${
+                  isOpen ? "opacity-100 w-auto ml-3" : "opacity-0 w-0 overflow-hidden"
+                }`}
+              >
+                Essay Analysis
+              </span>
+            </Link>
+            </div>
 
           {/* Divider - only show when sidebar is open */}
           {isOpen && <div className="my-4 border-t border-color-border-secondary mx-2 animate-fadeIn" />}
