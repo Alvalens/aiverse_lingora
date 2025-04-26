@@ -79,15 +79,14 @@ export default function LoginPage() {
   }
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-primary lg:flex-row">
-      <div className="relative hidden lg:block lg:w-1/2">
-        <div className="absolute inset-0">
-          <Image src="/images/loginregister/CEO.jpg" alt="CEO Background" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-black/40"></div>
-        </div>
+      <div className="relative hidden lg:block lg:w-1/2">        <div className="absolute inset-0">
+        <Image src="/auth/CEO.jpg" alt="CEO Background" fill className="object-cover" priority />
+        <div className="absolute inset-0 bg-black/40"></div>
+      </div>
 
         <div className="absolute left-6 top-6 z-10">
           <Image
-            src="/images/loginregister/Logo-Intervyou.png"
+            src="/landing-page/logo.svg"
             alt="Logo"
             width={300}
             height={72}

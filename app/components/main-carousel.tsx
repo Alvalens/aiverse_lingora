@@ -82,39 +82,39 @@ const FeatureCard = ({ icon, title, description }: FeatureCardProps) => {
 const features = [
   {
     icon: <MessageSquare className="h-6 w-6 text-secondary" />,
-    title: "Adaptive Interviewing",
+    title: "Interactive Conversations",
     description:
-      "Our AI adjusts questions in real time to match your skill level and career goals.",
+      "Our AI adapts conversations in real time to match your English level, interests, and learning goals.",
   },
   {
     icon: <BarChart3 className="h-6 w-6 text-secondary" />,
-    title: "Comprehensive Feedback",
+    title: "Pronunciation Feedback",
     description:
-      "Receive verbal tips and non-verbal analysis for tone, posture, and facial expression improvements.",
+      "Receive detailed feedback on your pronunciation, intonation, and rhythm to improve your natural English speaking.",
   },
   {
     icon: <Zap className="h-6 w-6 text-secondary" />,
-    title: "Curated Resources",
+    title: "Daily Speaking Activities",
     description:
-      "We suggest articles and videos targeting your identified interview skill gaps for efficient learning.",
+      "Engage in different speaking scenarios every day to build confidence and fluency in various real-life situations.",
   },
   {
     icon: <MessageSquare className="h-6 w-6 text-secondary" />,
-    title: "CV Optimization",
+    title: "Debate Practice",
     description:
-      "Automatically enhance your resume’s formatting, keywords, and structure for higher ATS match rates.",
+      "Develop critical thinking and advanced speaking skills through interactive debates on interesting topics.",
   },
   {
     icon: <BarChart3 className="h-6 w-6 text-secondary" />,
-    title: "Performance Analytics",
+    title: "Progress Tracking",
     description:
-      " Interactive dashboards visualize your progress metrics, highlighting strengths and improvement areas across sessions.",
+      "Interactive dashboards visualize your speaking improvement, highlighting strengths and areas for growth over time.",
   },
   {
     icon: <Zap className="h-6 w-6 text-secondary" />,
-    title: "Affordable Access",
+    title: "Storytelling Sessions",
     description:
-      "Cloud-based subscription plans offer accessible, installation-free practice with transparent, budget-friendly pricing options.",
+      "Enhance your narrative skills and vocabulary through engaging storytelling activities with immediate feedback.",
   },
 ];
 

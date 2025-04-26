@@ -5,41 +5,22 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { Tokens } from "@/lib/constants";
 
 const MainFaq = () => {
   const faqs = [
     {
-      question: "What is Intervyou.ai and how does it work?",
+      question: "What is Lingora and how does it work?",
       answer:
-        "Intervyou.ai is an AI-driven SaaS platform using a token-based system for interview practice and CV services.",
+        "Lingora is an AI-driven platform that helps you learn English through speaking practice. Our interactive conversations, debates, and storytelling sessions improve your fluency naturally.",
     },
     {
       question: "What are tokens and how do they work?",
       answer:
-        "Tokens are credits you purchase to use platform features; each action deducts a set number of tokens.",
-    },
-    {
-      question: "How many tokens do I need for an interview session?",
-      answer: `Each AI Interview Session costs ${Tokens.convDaily} tokens per practice run.`,
-    },
-    {
-      question: "How many tokens for CV optimization and analysis?",
-      answer: `CV Optimization requires ${Tokens.convDaily} tokens, while CV Analysis costs ${Tokens.convDaily} tokens per use.`,
+        "Tokens are credits you purchase to access different speaking activities on Lingora. Each conversation or learning activity uses a specific number of tokens.",
     },
     {
       question: "Are there any free tokens for new users?",
-      answer: "Yes, every new user receives 50 free tokens upon signing up.",
-    },
-    {
-      question: "Can I use Intervyou.ai on mobile devices?",
-      answer:
-        "Yes, the platform is fully responsive and works on any modern browser—desktop, tablet, or smartphone.",
-    },
-    {
-      question: "Is my data and feedback secure?",
-      answer:
-        "All data is encrypted in transit and at rest, and we comply with industry-standard data protection regulations.",
+      answer: "Yes, every new user receives 50 free tokens upon signing up to try out our speaking activities.",
     },
   ];
 

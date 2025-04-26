@@ -10,7 +10,7 @@ import Circle from "./components/circle";
 import Footer from "./components/footer";
 import FeatureMenu from "./components/feature-menu";
 import MainCarousel from "./components/main-carousel";
-import MainFeedback from "./components/main-feedback";
+// import MainFeedback from "./components/main-feedback";
 import MainFaq from "./components/main-faq";
 
 // Animation variants for sections
@@ -160,33 +160,7 @@ export default function Home() {
         <MainCarousel />
       </AnimatedSection>
       {/* Section 3 - End */}
-      {/* Section 4 - Start */}
-      <AnimatedSection
-        id="testimonials"
-        className="text-white py-16 px-4 md:px-10 text-center relative z-10"
-        delay={0.1}
-      >
-        <motion.div
-          variants={itemVariants}
-          className="inline-block bg-tertiary text-color-text px-4 py-1 rounded-full text-sm mb-4"
-        >
-          Clients Feedback
-        </motion.div>
-
-        <motion.h2
-          variants={itemVariants}
-          className="text-3xl md:text-5xl font-bold mb-8 text-color-text"
-        >
-          What our <span className="text-tertiary">satisfied clients</span>{" "}
-          <br />
-          said about us!
-        </motion.h2>
-
-        <motion.div variants={itemVariants}>
-          <MainFeedback />
-        </motion.div>
-      </AnimatedSection>
-      {/* Section 4 - End */}
+      
       {/* Section 5 - Start */}
       <AnimatedSection id="faq" className="relative z-10" delay={0.1}>
         <MainFaq />
