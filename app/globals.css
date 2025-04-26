@@ -120,3 +120,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+@theme {
+  --color-primary: #FFFFFF;
+  --color-secondary: #F8FAFC;
+  --color-tertiary: #00D4DA;
+  --color-quaternary: #0A3558;
+}
