@@ -52,7 +52,7 @@ export async function middleware(req: NextRequest) {
 		// Guest-only: prevent logged-in users from accessing login/register
 		if (
 			token &&
-			(pathname === "/auth/loggin" || pathname === "/auth/register")
+			(pathname === "/auth/login" || pathname === "/auth/register")
 		) {
 			return NextResponse.redirect(new URL("/app/dashboard", req.url));
 		}

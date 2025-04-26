@@ -115,7 +115,7 @@ export default function LoginPage() {
           <Button
             variant="outline"
             onClick={handleGoogleSignIn}
-            className="mb-4 w-full justify-center gap-2 border-gray-700 bg-transparent py-4 text-white hover:bg-secondary hover:text-black lg:mb-6 lg:py-6"
+            className="mb-4 w-full justify-center gap-2 border-gray-700 bg-transparent py-4 text-black hover:bg-secondary hover:text-black lg:mb-6 lg:py-6"
             disabled={googleLoading || isSubmitting}
           >
             {googleLoading ? (
