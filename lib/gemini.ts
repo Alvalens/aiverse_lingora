@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI, Schema, SchemaType } from "@google/generative-ai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import * as fs from "node:fs";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
@@ -59,6 +60,38 @@ const DailyTalkSuggestionSchema = {
 		},
 	},
 	required: ["answers", "overallSuggestion"],
+} as Schema;
+
+const StoryTellingSuggestionSchema = {
+	description:
+		"Story Telling suggestion, grammary and suggestion for the user to improve their English skills ",
+	type: SchemaType.OBJECT,
+	properties: {
+		overallSuggestion: {
+			type: SchemaType.STRING,
+			description: "overall suggestion of the user answer",
+		},
+		score: {
+			type: SchemaType.NUMBER,
+			description: "score overall"
+		},
+		suggestions: {
+			type: SchemaType.ARRAY,
+			items: {
+				type: SchemaType.OBJECT,
+				properties: {
+					part: {
+						type: SchemaType.STRING,
+						description: "part of the user answer that need correction"
+					},
+					suggestion: {
+						type: SchemaType.STRING,
+						description: "suggestion of the part based on the grammar etc"
+					}
+				}
+			}
+		}
+	}
 } as Schema;
 
 const modelTheme = genAI.getGenerativeModel({
@@ -279,4 +312,6 @@ export {
 	modelDebateConversation,
 	modelDebateSuggestion,
 	modelDebateTranscribe
+	modelStoryTellingSuggestion,
+	modelStoryTelling,
 };

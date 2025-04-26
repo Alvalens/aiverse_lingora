@@ -41,122 +41,45 @@ export default function CreateConversationPage() {
     return <div className="flex justify-center items-center h-screen">Please login to continue</div>;
   }
 
-  const generateThemes = async (type: ConversationType) => {
-    setIsGenerating(prev => ({ ...prev, [type]: true }));
-    try {
-      const response = await fetch(`/api/conversations/${type}/theme`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) throw new Error(`Failed to generate ${type} themes`);
-
-      const data = await response.json();
-      const mappedThemes = data.themes.map((t: any) => ({
-        theme: t.title,
-        description: t.description
-      }));
-      setThemes(prev => ({ ...prev, [type]: mappedThemes }));
-      setSelectedTheme(prev => ({ ...prev, [type]: null }));
-    } catch (error) {
-      console.error(`Error generating ${type} themes:`, error);
-      toast.error("Failed to generate themes. Please try again.");
-    } finally {
-      setIsGenerating(prev => ({ ...prev, [type]: false }));
-    }
+  const handleCreateDailyTalk = () => {
+    router.push("/app/conversation/daily-talk");
   };
 
-  const startConversation = async (type: ConversationType) => {
-    if (!selectedTheme[type]) {
-      toast.error("Please select a theme to continue");
-      return;
-    }
-
-    setIsLoading(prev => ({ ...prev, [type]: true }));
-    try {
-      const response = await fetch(`/api/conversations/${type}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          theme: selectedTheme[type]?.theme,
-          description: selectedTheme[type]?.description
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create conversation");
-
-      const data = await response.json();
-      toast.success("Conversation created successfully");
-      router.push(`/app/conversation/${type}/${data.id}`);
-    } catch (error) {
-      console.error("Error creating conversation:", error);
-      toast.error("Failed to create conversation. Please try again.");
-    } finally {
-      setIsLoading(prev => ({ ...prev, [type]: false }));
-    }
+  const handleCreateStoryTelling = () => {
+    router.push("/app/conversation/story-telling");
   };
 
-  const handleThemeSelection = (type: ConversationType, theme: Theme) => {
-    setSelectedTheme(prev => ({ ...prev, [type]: { ...theme } }));
-  };
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-primary">
+      <div className="w-full max-w-lg p-6 bg-[#052038] rounded-lg shadow-lg text-white">
+        <h1 className="text-2xl font-bold mb-6 text-center">Conversations</h1>
 
-  const ConversationCard = ({ type }: { type: ConversationType }) => (
-    <div className="w-full max-w-xl p-6 bg-[#052038] rounded-lg shadow-lg text-white mb-8">
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        {type === "daily-talk" ? "Daily Talk" : "Interactive Debate"}
-      </h2>
+        <p className="mb-8 text-center">
+          Daily Talk with AI
+        </p>
 
-      <div className="mb-8">
-        <Button
-          onClick={() => generateThemes(type)}
-          disabled={isGenerating[type]}
-          className="w-full bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
-        >
-          {isGenerating[type] ? "Generating Themes..." : `Generate ${type === "daily-talk" ? "Daily Talk" : "Debate"} Themes`}
-        </Button>
-      </div>
-
-      {themes[type].length > 0 && (
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold mb-4">Select a Theme:</h3>
-          <div className="space-y-3">
-            {themes[type].map((theme, index) => (
-              <div
-                key={index}
-                className={`p-4 border rounded-lg cursor-pointer hover:bg-blue-900 transition-colors ${
-                  selectedTheme[type]?.theme === theme.theme ? "bg-blue-900 border-blue-500" : "border-gray-700"
-                }`}
-                onClick={() => handleThemeSelection(type, theme)}
-              >
-                <div className="flex items-center">
-                  <input
-                    type="radio"
-                    name={`themeSelection-${type}`}
-                    checked={selectedTheme[type]?.theme === theme.theme}
-                    onChange={() => handleThemeSelection(type, theme)}
-                    className="w-5 h-5 mr-3"
-                  />
-                  <div>
-                    <h4 className="font-medium">{theme.theme}</h4>
-                    <p className="text-gray-300 text-sm mt-1">{theme.description}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {themes[type].length > 0 && (
         <div className="flex justify-center">
           <Button
-            onClick={() => startConversation(type)}
-            disabled={isLoading[type] || !selectedTheme[type]}
-            className={`${
-              type === "daily-talk" ? "bg-green-600 hover:bg-green-700" : "bg-purple-600 hover:bg-purple-700"
-            } text-white px-8 py-3 rounded-lg text-lg`}
+            onClick={handleCreateDailyTalk}
+            className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
           >
-            {isLoading[type] ? "Creating Session..." : `Start ${type === "daily-talk" ? "Conversation" : "Debate"}`}
+            Create New
+          </Button>
+        </div>
+      </div>
+      <div className="w-full max-w-lg p-6 bg-[#052038] rounded-lg shadow-lg text-white mt-3">
+        <h1 className="text-2xl font-bold mb-6 text-center">Conversations</h1>
+
+        <p className="mb-8 text-center">
+          Story Telling 
+        </p>
+
+        <div className="flex justify-center">
+          <Button
+            onClick={handleCreateStoryTelling}
+            className="bg-[#0E63A9] hover:bg-blue-700 text-white px-6 py-2 rounded"
+          >
+            Create New 
           </Button>
         </div>
       )}

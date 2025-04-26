@@ -1,13 +1,31 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "react-hot-toast";
 
-export function useAudioRecorder() {
+interface AudioRecorderOptions {
+	maxDuration?: number; // Maximum recording duration in milliseconds
+}
+
+export function useAudioRecorder(options: AudioRecorderOptions = {}) {
 	const [isRecording, setIsRecording] = useState(false);
 	const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
 	const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 	const audioChunksRef = useRef<Blob[]>([]);
+	const onStopCallbackRef = useRef<((blob: Blob) => void) | null>(null);
+	const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+	// Default max duration is 30 seconds
+	const maxDuration = options.maxDuration || 30000;
+
+	// Cleanup function for timers
+	useEffect(() => {
+		return () => {
+			if (timerRef.current) {
+				clearTimeout(timerRef.current);
+			}
+		};
+	}, []);
 
 	const startRecording = async () => {
 		try {
@@ -19,6 +37,12 @@ export function useAudioRecorder() {
 						.getTracks()
 						.forEach((track) => track.stop());
 				}
+			}
+
+			// Clear any existing timer
+			if (timerRef.current) {
+				clearTimeout(timerRef.current);
+				timerRef.current = null;
 			}
 
 			// Reset state
@@ -43,11 +67,26 @@ export function useAudioRecorder() {
 						type: "audio/webm",
 					});
 					setAudioBlob(audioBlob);
+
+					// Call the onStop callback if it exists
+					if (onStopCallbackRef.current) {
+						onStopCallbackRef.current(audioBlob);
+					}
 				}
 			};
 
 			mediaRecorder.start();
 			setIsRecording(true);
+
+			// Set a timer to automatically stop recording after maxDuration
+			timerRef.current = setTimeout(() => {
+				if (isRecording) {
+					stopRecording();
+					toast.success(
+						"Recording stopped automatically due to time limit"
+					);
+				}
+			}, maxDuration);
 		} catch (error) {
 			console.error("Error starting audio recording:", error);
 			toast.error(
@@ -56,7 +95,18 @@ export function useAudioRecorder() {
 		}
 	};
 
-	const stopRecording = () => {
+	const stopRecording = (onStopCallback?: (blob: Blob) => void) => {
+		// Clear any timer
+		if (timerRef.current) {
+			clearTimeout(timerRef.current);
+			timerRef.current = null;
+		}
+
+		// Set the callback if provided
+		if (onStopCallback) {
+			onStopCallbackRef.current = onStopCallback;
+		}
+
 		if (mediaRecorderRef.current && isRecording) {
 			mediaRecorderRef.current.stop();
 			setIsRecording(false);
@@ -80,5 +130,6 @@ export function useAudioRecorder() {
 		startRecording,
 		stopRecording,
 		resetAudioBlob,
+		maxDuration,
 	};
 }
