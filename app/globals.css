@@ -122,10 +122,29 @@
 }
 
 @theme {
-  --color-primary: #FFFFFF;
-  --color-secondary: #F8FFFF;
-  --color-tertiary: #00D4DA;
-  --color-quaternary: #0A3558;
-  --color-color-border-secondary: #E2E8F0;
+  --color-primary: #ffffff;
+  --color-secondary: #f8fafc;
+  --color-tertiary: #00d4da;
+  --color-quaternary: #0a3558;
+  --color-color-border-secondary: #e2e8f0;
   --color-color-text: #303030;
+}
+
+@layer components {
+  .menu-link {
+    @apply relative inline-block text-gray-400 transition-colors;
+  }
+
+  .menu-link:hover {
+    @apply text-tertiary;
+  }
+
+  .menu-link::after {
+    content: "";
+    @apply absolute left-0 bottom-0 h-[2px] w-0 bg-tertiary transition-all duration-300 ease-in-out;
+  }
+
+  .menu-link:hover::after {
+    @apply w-full;
+  }
 }
