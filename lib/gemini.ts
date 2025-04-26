@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI, Schema, SchemaType } from "@google/generative-ai";
+import * as fs from "node:fs";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -33,6 +34,34 @@ const modelTheme = genAI.getGenerativeModel({
 	},
 });
 
+const modelConversation = genAI.getGenerativeModel({
+    
+    model: "gemini-2.0-flash",
+    systemInstruction:
+        "You are an expert english teacher. Generate a conversation between two people based on the theme and description provided. The conversation should be engaging and interesting, and it should be suitable for a daily conversation.",
+    generationConfig: {
+        temperature: 1.3,
+    },
+});
+
+const modelTranscribe = genAI.getGenerativeModel({
+    
+    model: "gemini-2.0-flash",
+    systemInstruction:
+        "You are an expert english teacher. Transcribe the audio to text.",
+})
+
+export function fileToGenerativePart(path: string, mimeType: string) {
+	return {
+		inlineData: {
+			data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+			mimeType,
+		},
+	};
+}
+
 export {
-    modelTheme
+    modelTheme,
+    modelConversation,
+    modelTranscribe,
 }
