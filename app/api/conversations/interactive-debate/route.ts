@@ -32,7 +32,7 @@ export async function POST(req: Request) {
 			where: { userId: session.user.id },
 		});
 
-		if (!tokenBalance || tokenBalance.token < Tokens.convDaily) {
+		if (!tokenBalance || tokenBalance.token < Tokens.convDebate) {
 			return NextResponse.json(
 				{ error: "Insufficient tokens" },
 				{ status: 403 }
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 		}
 
 		// Create a new daily talk session
-		const dailyTalkSession = await prisma.dailyTalkSession.create({
+		const debateSession = await prisma.debateSession.create({
 			data: {
 				userId: session.user.id,
 				theme,
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 			where: { userId: session.user.id },
 			data: {
 				token: {
-					decrement: Tokens.convDaily,
+					decrement: Tokens.convDebate,
 				},
 			},
 		});
@@ -61,43 +61,16 @@ export async function POST(req: Request) {
 		// Return the session ID
 		return NextResponse.json(
 			{
-				id: dailyTalkSession.id,
-				theme: dailyTalkSession.theme,
-				message: "Daily talk session created successfully",
+				id: debateSession.id,
+				theme: debateSession.theme,
+				message: "Debate session created successfully",
 			},
 			{ status: 201 }
 		);
 	} catch (error) {
-		console.error("Error creating daily talk session:", error);
+		console.error("Error creating debate session:", error);
 		return NextResponse.json(
-			{ error: "Failed to create daily talk session" },
-			{ status: 500 }
-		);
-	}
-}
-
-
-export async function GET() {
-	try {
-		const session = await getServerSession(authOptions);
-
-		if (!session?.user?.id) {
-			return NextResponse.json(
-				{ error: "Unauthorized" },
-				{ status: 401 }
-			);
-		}
-
-		const sessions = await prisma.dailyTalkSession.findMany({
-			where: { userId: session.user.id },
-			orderBy: { createdAt: "desc" },
-		});
-
-		return NextResponse.json(sessions, { status: 200 });
-	} catch (error) {
-		console.error("Error fetching daily talk sessions:", error);
-		return NextResponse.json(
-			{ error: "Failed to fetch daily talk sessions" },
+			{ error: "Failed to create debate session" },
 			{ status: 500 }
 		);
 	}

@@ -67,9 +67,9 @@ export async function POST(
 	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const { id: dailyTalkId } = await params;
+		const { id } = await (params);
 
-		if (!dailyTalkId) {
+		if (!id) {
 			return NextResponse.json(
 				{ error: "Invalid request" },
 				{ status: 400 }
@@ -89,7 +89,7 @@ export async function POST(
 
 		const dailyTalkSession = await prisma.dailyTalkSession.findUnique({
 			where: {
-				id: dailyTalkId,
+				id: id,
 				userId: user_id,
 			},
 		});
@@ -198,7 +198,7 @@ export async function POST(
 		for (let i = 0; i < history.length; i++) {
 			await prisma.dailyTalkQuestion.create({
 				data: {
-					dailyTalkId: dailyTalkId,
+					dailyTalkId: id,
 					question: history[i].question,
 					answer: history[i].answer,
 					suggestion: suggestions[i].suggestion,
@@ -213,7 +213,7 @@ export async function POST(
 
 		// Update the session with overall score and suggestions
 		await prisma.dailyTalkSession.update({
-			where: { id: dailyTalkId },
+			where: { id: id },
 			data: {
 				score: Math.round(totalMark / history.length),
 				suggestions: overallSuggestion,

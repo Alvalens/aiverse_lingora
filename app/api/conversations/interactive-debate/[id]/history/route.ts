@@ -8,9 +8,9 @@ export async function GET(
 	{ params }: { params: Promise<{ id: string }> }
 ) {
 	try {
-		const { id: dailyTalkId } = await params;
+		const { id: debateId } = await params;
 
-		if (!dailyTalkId) {
+		if (!debateId) {
 			return NextResponse.json(
 				{ error: "Invalid request" },
 				{ status: 400 }
@@ -27,9 +27,9 @@ export async function GET(
 			);
 		}
 
-		const session = await prisma.dailyTalkSession.findUnique({
+		const session = await prisma.debateSession.findUnique({
 			where: {
-				id: dailyTalkId,
+				id: debateId,
 				userId: user_id,
 			},
 			include: {
@@ -39,16 +39,16 @@ export async function GET(
 
 		if (!session || session.userId !== user_id) {
 			return NextResponse.json(
-				{ error: "Daily talk session not found" },
+				{ error: "Debate session not found" },
 				{ status: 404 }
 			);
 		}
 
 		return NextResponse.json(session, { status: 200 });
 	} catch (error) {
-		console.error("Failed to get daily talk session", error);
+		console.error("Failed to get debate session", error);
 		return NextResponse.json(
-			{ error: "Failed to get daily talk session" },
+			{ error: "Failed to get debate session" },
 			{ status: 500 }
 		);
 	}
