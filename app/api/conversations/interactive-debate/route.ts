@@ -4,6 +4,42 @@ import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { Tokens } from "@/lib/constants";
 
+
+export async function GET() {
+	try {
+	  const session = await getServerSession(authOptions);
+  
+	  if (!session?.user?.id) {
+		return NextResponse.json(
+		  { error: "Unauthorized" },
+		  { status: 401 }
+		);
+	  }
+  
+	  // Ambil semua sesi debate milik user
+	  const debateSessions = await prisma.debateSession.findMany({
+		where: { userId: session.user.id },
+		orderBy: { createdAt: "desc" },
+		select: {
+		  id: true,
+		  theme: true,
+		  description: true,
+		  createdAt: true,
+		},
+	  });
+  
+	  return NextResponse.json({
+		success: true,
+		sessions: debateSessions,
+	  });
+	} catch (error) {
+	  console.error("Error fetching debate sessions:", error);
+	  return NextResponse.json(
+		{ error: "Failed to fetch debate sessions" },
+		{ status: 500 }
+	  );
+	}
+  }
 export async function POST(req: Request) {
 	try {
 		const session = await getServerSession(authOptions);
