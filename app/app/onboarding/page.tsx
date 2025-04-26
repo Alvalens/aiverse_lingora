@@ -185,17 +185,17 @@ export default function OnboardingPage() {
 
   return (
     <div className="min-h-screen bg-primary">
-      <div className="bg-[#052038] text-white text-center py-4">
+      <div className="bg-secondary text-color-text text-center py-4">
         <h1 className="text-2xl font-bold">Onboarding</h1>
       </div>
 
-      <div className="max-w-7xl mx-auto py-6 px-4">
+      <div className="max-w-7xl text-color-text mx-auto py-6 px-4">
         <ProgressIndicator currentStep={currentStep} steps={PROGRESS_LABELS} />
       </div>
 
       <div
-        className="bg-[#052038] rounded-lg shadow-lg p-8 max-w-7xl mx-auto h-auto border"
-        style={{ borderColor: "#23384A" }}
+        className="bg-secondary border border-color-border  rounded-lg shadow-lg p-8 max-w-7xl mx-auto h-auto"
+        
       >
         {renderStepContent()}
       </div>

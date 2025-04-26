@@ -1,10 +1,11 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+
+import { Geist, Geist_Mono,Quicksand } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProviders";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import Script from "next/script";
 import "./globals.css";
 
+// import ogImage from "@/public/og-image.jpg";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -17,16 +18,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Lingora | Platform Belajar Bahasa Inggris",
-    template: "%s | Lingora",
-    absolute: "Lingora",
-  },
-  applicationName: "Lingora",
-  description:
-    "Lingora is a platform to learn English conversation with AI",
-};
+const quickSand = Quicksand({
+  variable: "--font-quick-sand",
+  subsets: ["latin"],
+});
+
+
 
 export default function RootLayout({
   children,
@@ -40,11 +37,12 @@ export default function RootLayout({
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
       ></Script>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-primary`}
+        className={`${geistSans.variable} ${geistMono.variable} ${quickSand.variable}  antialiased bg-primary`}
       >
         <main>
           <Toaster />
           <ReactQueryProvider>
+            <NextAuthProvider>{children}</NextAuthProvider>
             <NextAuthProvider>{children}</NextAuthProvider>
           </ReactQueryProvider>
         </main>

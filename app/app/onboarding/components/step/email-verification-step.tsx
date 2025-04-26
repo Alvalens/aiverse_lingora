@@ -152,7 +152,7 @@ export default function EmailVerificationStep({
   }
 
   return (
-    <div className="max-w-xl mx-auto text-center text-white">
+    <div className="max-w-xl mx-auto text-center text-color-text">
       <h2 className="text-2xl font-bold mb-6">Email Verification</h2>
       <p className="mb-6">
         Please verify your email address. A verification link will be sent to <strong>{session?.user?.email}</strong>.
@@ -162,7 +162,7 @@ export default function EmailVerificationStep({
 
       <button
         onClick={handleSendVerificationEmail}
-        className={`bg-primary border-2 border-secondary text-white py-2 px-6 rounded-lg font-medium transition-colors hover:bg-secondary hover:text-black ${
+        className={`bg-primary border-2 border-tertiary text-color-text py-2 px-6 rounded-lg font-medium transition-colors hover:bg-tertiary hover:text-white ${
           isSubmitting || emailTimer > 0 || isEmailVerified ? "opacity-50 cursor-not-allowed" : ""
         }`}
         disabled={isSubmitting || emailTimer > 0 || isEmailVerified}
@@ -179,26 +179,26 @@ export default function EmailVerificationStep({
           <DialogTrigger asChild>
             <button className="mt-2 text-base text-red-600 underline mx-auto block">Not receiving email?</button>
           </DialogTrigger>
-          <DialogContent className="bg-[#052038] p-6 rounded-lg shadow-lg w-full max-w-md mx-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <DialogContent className="bg-secondary p-6 rounded-lg shadow-lg w-full max-w-md mx-auto fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <button
               onClick={() => setIsDialogOpen(false)}
-              className="absolute top-4 right-4 text-white text-xl font-bold"
+              className="absolute top-4 right-4 text-color-text text-xl font-bold"
               aria-label="Close"
             >
               &times;
             </button>
             <DialogHeader>
-              <DialogTitle className="text-lg font-bold text-white">Update Email</DialogTitle>
+              <DialogTitle className="text-lg font-bold text-color-text">Update Email</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-              <Input type="email" placeholder="New Email" {...register("newEmail")} className="text-white" required />
+              <Input type="email" placeholder="New Email" {...register("newEmail")} className="text-color-text" required />
               {errors.newEmail && <p className="text-xs text-red-400">{errors.newEmail.message}</p>}
 
               <Input
                 type="password"
                 placeholder="Current Password"
                 {...register("currentPassword")}
-                className="text-white"
+                className="text-color-text"
                 required
               />
               {errors.currentPassword && <p className="text-xs text-red-400">{errors.currentPassword.message}</p>}
@@ -207,7 +207,7 @@ export default function EmailVerificationStep({
               <button
                 type="button"
                 onClick={() => setShowPasswordFields(!showPasswordFields)}
-                className="text-base text-white underline"
+                className="text-base text-color-text underline"
               >
                 {showPasswordFields ? "Hide Password Fields" : "Set New Password"}
               </button>
@@ -237,7 +237,7 @@ export default function EmailVerificationStep({
 
               <Button
                 type="submit"
-                className="bg-primary border-2 border-secondary text-white w-full hover:bg-secondary hover:border-secondary"
+                className="bg-primary text-color-text border-2 border-tertiary w-full hover:bg-tertiary hover:text-white hover:border-tertiary"
               >
                 Update Email
               </Button>
