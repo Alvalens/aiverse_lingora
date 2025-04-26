@@ -72,6 +72,8 @@ const modelTheme = genAI.getGenerativeModel({
 	},
 });
 
+
+
 const modelConversation = genAI.getGenerativeModel({
 	model: "gemini-2.0-flash",
 	systemInstruction: `
@@ -132,6 +134,133 @@ const modelTranscribe = genAI.getGenerativeModel({
 		"You are an expert english teacher. Transcribe the audio to text.",
 });
 
+const DebateThemeSchema = {
+	description: "Generate a random topic for a debate session",
+	type: SchemaType.ARRAY,
+	items: {
+	  type: SchemaType.OBJECT,
+	  properties: {
+		title: {
+		  type: SchemaType.STRING,
+		  description: "Debate topic title",
+		},
+		description: {
+		  type: SchemaType.STRING,
+		  description:
+			"Brief overview of the topic and the key arguments on both sides",
+		},
+	  },
+	  required: ["title", "description"],
+	},
+  } as Schema;
+
+  const DebateSuggestionSchema = {
+	description:
+	  "Debate feedback suggestions, focusing on argument quality, coherence, persuasiveness, and language",
+	type: SchemaType.OBJECT,
+	properties: {
+	  answers: {
+		type: SchemaType.ARRAY,
+		items: {
+		  type: SchemaType.OBJECT,
+		  properties: {
+			suggestion: {
+			  type: SchemaType.STRING,
+			  description:
+				"A concise tip to improve the specific argument or language use, with an example correction if applicable",
+			},
+			reason: {
+			  type: SchemaType.STRING,
+			  description:
+				"Why this change will strengthen the argument’s clarity, logic, or rhetorical impact",
+			},
+			mark: {
+			  type: SchemaType.NUMBER,
+			  description:
+				"Numeric score (1-10) assessing argument strength, coherence, and language accuracy",
+			},
+		  },
+		  required: ["suggestion", "reason", "mark"],
+		},
+	  },
+	  overallSuggestion: {
+		type: SchemaType.STRING,
+		description:
+		  "A comprehensive summary of the user’s debate performance, highlighting strengths in reasoning and language, plus strategic tips for more persuasive debate",
+	  },
+	},
+	required: ["answers", "overallSuggestion"],
+  } as Schema;
+
+  const modelDebateTheme = genAI.getGenerativeModel({
+	model: "gemini-2.0-flash",
+	systemInstruction: `
+  You are an expert debate coach.
+  Generate 5 compelling debate topics. Each should include:
+  • title: a concise statement of the motion or question
+  • description: context, stakes, and possible angles for both sides
+  Output as a JSON array: [{ title: '...', description: '...' }, ...]
+	`.trim(),
+	generationConfig: {
+	  temperature: 1.3,
+	  responseMimeType: "application/json",
+	  responseSchema: DebateThemeSchema,
+	},
+  });
+
+  const modelDebateConversation = genAI.getGenerativeModel({
+	model: "gemini-2.0-flash",
+	systemInstruction: `
+  You are a knowledgeable and respectful debate partner.
+  Your task is to respond **one turn at a time** to the user’s latest argument on the given debate topic.
+  • Address the user’s point directly with a counter-argument, supporting evidence, or probing question.
+  • Keep replies concise (1–3 sentences) and encourage further exchange.
+  • Do not script future turns—only reply to the most recent user input.
+  • Maintain a formal yet engaging debate tone.
+	`.trim(),
+	generationConfig: {
+	  temperature: 1.3,
+	},
+  });
+
+  // Model to provide feedback on debate performance
+const modelDebateSuggestion = genAI.getGenerativeModel({
+	model: "gemini-1.5-pro",
+	systemInstruction: [
+	  "You are a professional Expert debate coach.",
+	  "Your task is to evaluate each user argument for:",
+	  "- Logical coherence and structure",
+	  "- Persuasiveness and use of evidence",
+	  "- Language accuracy and rhetorical style",
+	  "",
+	  "Use a score from 1 to 10, where:",
+	  "  1-2 (Very Weak): Argument unclear or unsupported, major logical flaws.",
+	  "  3-4 (Weak): Some logical gaps or poor evidence, language errors hindering clarity.",
+	  "  5-6 (Average): Understandable argument with minor logic or language issues.",
+	  "  7-8 (Strong): Well-structured, persuasive, with small language refinements possible.",
+	  "  9-10 (Excellent): Highly convincing, logically sound, and eloquently expressed.",
+	  "",
+	  "For each user input, output a JSON array with objects containing:",
+	  "  • suggestion: concise tip + example if needed,",
+	  "  • reason: why it improves argument or language,",
+	  "  • mark: numeric score (1–10).",
+	  "",
+	  "Also include an 'overallSuggestion' summarizing the debate strengths, weaknesses, and next-step strategies.",
+	  "",
+	  "Output only the JSON and overallSuggestion—no extra text.",
+	].join("\n"),
+	generationConfig: {
+	  responseMimeType: "application/json",
+	  responseSchema: DebateSuggestionSchema,
+	},
+  });
+
+  const modelDebateTranscribe = genAI.getGenerativeModel({
+	model: "gemini-2.0-flash",
+	systemInstruction:
+	  "You are an expert Debate Coach. Transcribe the submitted debate audio to text.",
+  });
+
 export function fileToGenerativePart(path: string, mimeType: string) {
 	return {
 		inlineData: {
@@ -146,4 +275,8 @@ export {
 	modelConversation,
 	modelTranscribe,
 	modelDailyTalkSuggestion,
+	modelDebateTheme,
+	modelDebateConversation,
+	modelDebateSuggestion,
+	modelDebateTranscribe
 };
