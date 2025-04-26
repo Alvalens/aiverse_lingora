@@ -1,5 +1,4 @@
-
-import { Geist, Geist_Mono,Quicksand } from "next/font/google";
+import { Geist, Geist_Mono, Quicksand } from "next/font/google";
 import { NextAuthProvider } from "@/providers/NextAuthProviders";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
 import Script from "next/script";
@@ -23,8 +22,6 @@ const quickSand = Quicksand({
   subsets: ["latin"],
 });
 
-
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -42,7 +39,6 @@ export default function RootLayout({
         <main>
           <Toaster />
           <ReactQueryProvider>
-
             <NextAuthProvider>{children}</NextAuthProvider>
           </ReactQueryProvider>
         </main>
