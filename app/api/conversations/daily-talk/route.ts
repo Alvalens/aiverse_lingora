@@ -79,26 +79,35 @@ export async function POST(req: Request) {
 
 export async function GET() {
 	try {
-		const session = await getServerSession(authOptions);
-
-		if (!session?.user?.id) {
-			return NextResponse.json(
-				{ error: "Unauthorized" },
-				{ status: 401 }
-			);
-		}
-
-		const sessions = await prisma.dailyTalkSession.findMany({
-			where: { userId: session.user.id },
-			orderBy: { createdAt: "desc" },
-		});
-
-		return NextResponse.json(sessions, { status: 200 });
-	} catch (error) {
-		console.error("Error fetching daily talk sessions:", error);
+	  const session = await getServerSession(authOptions);
+  
+	  if (!session?.user?.id) {
 		return NextResponse.json(
-			{ error: "Failed to fetch daily talk sessions" },
-			{ status: 500 }
+		  { error: "Unauthorized" },
+		  { status: 401 }
 		);
+	  }
+  
+	  const sessions = await prisma.dailyTalkSession.findMany({
+		where: { userId: session.user.id },
+		orderBy: { createdAt: "desc" },
+		select: {
+		  id: true,
+		  theme: true,
+		  description: true,
+		  createdAt: true,
+		},
+	  });
+  
+	  return NextResponse.json({
+		success: true,
+		sessions,
+	  }, { status: 200 });
+	} catch (error) {
+	  console.error("Error fetching daily talk sessions:", error);
+	  return NextResponse.json(
+		{ error: "Failed to fetch daily talk sessions" },
+		{ status: 500 }
+	  );
 	}
-}
+  }
