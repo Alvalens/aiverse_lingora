@@ -20,7 +20,6 @@ export async function GET(
 
 		const { id: sessionId } = await params;
 
-		// Fetch the story telling session
 		const storyTellingSession = await prisma.storyTellingSession.findUnique(
 			{
 				where: {
@@ -35,7 +34,8 @@ export async function GET(
 				{ error: "Session not found" },
 				{ status: 404 }
 			);
-		} // Return the image path and other relevant data
+		} 
+        
 		return NextResponse.json({
 			id: storyTellingSession.id,
 			imagePath: storyTellingSession.image, 
