@@ -73,15 +73,6 @@ export default function StoryTellingPage() {
           </Button>
         </div>
 
-        <div className="flex justify-center mb-8">
-          <Button
-            onClick={() => router.push("/app/conversation/story-telling/history")}
-            className="bg-[#164869] hover:bg-[#0E3756] text-white px-6 py-2 rounded"
-          >
-            View History
-          </Button>
-        </div>
-
         {/* History Section */}
         <div>
           <h2 className="text-lg font-semibold mb-2 text-color-text">Your History</h2>
