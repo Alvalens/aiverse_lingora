@@ -135,8 +135,8 @@ export default function CreateConversationPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-primary">
-      <div className="w-full max-w-2xl p-6 bg-[#052038] rounded-lg shadow-lg text-white">
+    <div className="container max-w-7xl mx-auto flex flex-col items-center justify-center min-h-screen p-4 bg-primary text-color-text border">
+      <div className="w-full max-w-2xl p-6 rounded-lg shadow-lg lg:min-w-7xl">
         <h1 className="text-2xl font-bold mb-6 text-center">
           Create New Debate
         </h1>
@@ -150,6 +150,7 @@ export default function CreateConversationPage() {
             {isGenerating ? "Generating Themes..." : "Generate Themes"}
           </Button>
         </div>
+
         {themes.length > 0 && (
           <div className="mb-8">
             <div className="flex justify-between">
@@ -165,11 +166,12 @@ export default function CreateConversationPage() {
                 i
               </button>
             </div>
+
             <div className="space-y-1 md:space-y-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 md:gap-10">
               {themes.map((theme, index) => (
                 <div
                   key={index}
-                  className={`p-4 border-2 rounded-lg cursor-pointer   transition-colors flex flex-col justify-center h-[30rem] ${
+                  className={`p-4 border-2 rounded-lg cursor-pointer transition-colors flex flex-col justify-center h-[30rem] ${
                     selectedTheme?.theme === theme.theme
                       ? "border-tertiary/70"
                       : "border-gray-700"
