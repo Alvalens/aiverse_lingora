@@ -125,7 +125,7 @@ export default function RegisterPage() {
           <div className="flex justify-center mb-8">
             <div className="h-28 w-70">
               <Image
-                src="/images/loginregister/Logo_Intervyou_With_Text.png"
+                src="/auth/Logo_Intervyou_With_Text.png"
                 alt="Intervyou.ai Logo"
                 width={320}
                 height={80}
@@ -137,7 +137,7 @@ export default function RegisterPage() {
           {/* Google Login Button */}
           <Button
             variant="outline"
-            className="flex w-full items-center justify-center gap-2 border-gray-700 bg-transparent text-white hover:bg-secondary hover:text-black"
+            className="flex w-full items-center justify-center gap-2 border-gray-700 bg-transparent text-black hover:bg-secondary hover:text-black"
             onClick={handleGoogleLogin}
             disabled={googleLoading || loading}
           >
@@ -168,7 +168,7 @@ export default function RegisterPage() {
 
           <div className="flex items-center justify-center">
             <Separator className="w-1/3 bg-gray-700" />
-            <span className="px-4 text-sm text-gray-400">Or continue with</span>
+            <span className="px-4 text-sm text-gray-400">Or</span>
             <Separator className="w-1/3 bg-gray-700" />
           </div>
 
@@ -278,12 +278,12 @@ export default function RegisterPage() {
       </div>
 
       {/* Right side - Testimonial */}
-      <div className="hidden flex-1 flex-col items-center justify-center bg-primary p-8 md:flex">
+      <div className="hidden flex-1 flex-col items-center justify-center bg-secondary p-8 md:flex">
         <div className="max-w-md space-y-8">
           <div className="flex justify-center">
             <div className="h-32 w-32 overflow-hidden rounded-full border-4 border-gray-700">
               <Image
-                src="/images/loginregister/CEO.jpg"
+                src="/auth/CEO.jpg"
                 alt="User Profile"
                 width={128}
                 height={128}
@@ -304,12 +304,12 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2 text-center">
-            <h3 className="text-2xl font-bold text-white">Guy Hawkins</h3>
+            <h3 className="text-2xl font-bold text-black">Guy Hawkins</h3>
             <p className="text-gray-400">Nursing Assistant</p>
 
             <div className="flex justify-center pt-4">
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-white">MODX</span>
+                <span className="font-bold text-black">MODX</span>
               </div>
             </div>
           </div>

@@ -110,7 +110,7 @@ export default function LoginPage() {
 
       <div className="flex w-full flex-1 flex-col justify-center px-4 py-4 lg:w-1/2 lg:px-12 lg:py-0">
         <div className="mx-auto w-full max-w-md">
-          <h1 className="mb-4 text-center text-2xl font-semibold text-white lg:mb-8 lg:text-3xl">Login Page</h1>
+          <h1 className="mb-4 text-center text-2xl font-semibold text-black lg:mb-8 lg:text-3xl">Login Page</h1>
 
           <Button
             variant="outline"

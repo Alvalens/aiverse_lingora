@@ -135,10 +135,10 @@ export default function CreateConversationPage() {
   };
 
   return (
-    <div className="container max-w-7xl mx-auto flex flex-col items-center justify-center min-h-screen p-4 bg-primary text-color-text border">
-      <div className="w-full max-w-2xl p-6 rounded-lg shadow-lg lg:min-w-7xl">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-primary">
+      <div className="w-full max-w-2xl p-6 bg-[#052038] rounded-lg shadow-lg text-white">
         <h1 className="text-2xl font-bold mb-6 text-center">
-          Create New Conversation
+          Create New Debate
         </h1>
 
         <div className="mb-8">

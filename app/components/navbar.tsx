@@ -217,8 +217,8 @@ export default function Navbar() {
             setIsOpen={setIsProductsOpen}
             label="Our Products"
             items={[
-              { label: "AI Interview Session", route: "/app/interview" },
-              { label: "Analyze & Optimize CV", route: "/app/cv" },
+              { label: "Conversation", route: "/app/conversation" },
+              { label: "Essay Analyze", route: "/app/writing" },
             ]}
             onToggle={handleProductsToggle}
           />

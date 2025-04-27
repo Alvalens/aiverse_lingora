@@ -72,13 +72,13 @@ const Footer = () => {
             <h3 className="text-lg font-semibold">Features</h3>
             <ul className="mt-4 space-y-2">
               {[
-                { label: "AI Interview Session", route: "#interview" },
-                { label: "Feedback Improvement", route: "#feedback" },
+                { label: "Daily Conversation", route: "#" },
+                { label: "Feedback Improvement", route: "#" },
                 {
-                  label: "Material Recommendations",
-                  route: "#recommendations",
+                  label: "Debate",
+                  route: "#",
                 },
-                { label: "CV Analysis & Optimization", route: "#cv" },
+                { label: "Essay Analysis", route: "#" },
               ].map((service) => (
                 <li key={service.label}>
                   <a href={service.route} className="menu-link">

@@ -86,5 +86,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-	matcher: ["/((?!_next|static|favicon.ico|images).*)"], // Protect all routes except Next.js internals
+	matcher: ["/((?!_next|static|favicon.ico|images|landing-page|auth).*)"], // Protect all routes except Next.js internals
 };

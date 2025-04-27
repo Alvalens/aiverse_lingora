@@ -36,7 +36,7 @@ export function AppBreadcrumb() {
                       <BreadcrumbPage className="text-[#757575] font-medium">{displayName}</BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink asChild>
-                        <Link href={href} className="text-secondary/70">
+                        <Link href={href} className="text-[#757575] font-medium">
                           {displayName}
                         </Link>
                       </BreadcrumbLink>
